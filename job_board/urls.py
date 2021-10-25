@@ -1,4 +1,4 @@
-from main.views import index
+from main import views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -22,7 +22,14 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index, name='index')
+    path('', views.index, name='index'),
+    path('jobs/', views.jobs, name='jobs'),
+    path('candidate/', views.candidate, name='candidate'),
+    path('job_details/', views.job_details, name='job_details'),
+    path('blog/', views.blog, name='blog'),
+    path('single_blog/', views.single_blog, name='single_blog'),
+    path('contact/', views.contact, name='contact'),
+
 ]
 
 
