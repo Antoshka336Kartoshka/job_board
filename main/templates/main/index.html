@@ -70,16 +70,32 @@
                                     </nav>
                                 </div>
                             </div>
+                            {% if request.user.is_authenticated %}
+                            <div class="col-xl-2 col-lg-3 d-none d-lg-block">
+                                <div class="main-menu Appointment">
+                                    <ul>
+                                    <li><a href="#">{{ request.user.username }} <i class="ti-angle-down"></i></a>
+                                    <ul class="submenu">
+                                        <li><a href="#">Account</a></li>
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    </ul>
+                                    </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% else %}
                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                                <div class="Appointment">
+                                <div class="main-menu Appointment">
                                     <div class="phone_num d-none d-xl-block">
-                                        <a href="#">Log in</a>
+                                        <a href="{% url 'login' %}">Log in</a>
                                     </div>
                                     <div class="d-none d-lg-block">
                                         <a class="boxed-btn3" href="#">Post a Job</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
+
                             <div class="col-12">
                                 <div class="mobile_menu d-block d-lg-none"></div>
                             </div>
@@ -116,7 +132,7 @@
     </div>
     <!-- slider_area_end -->
 
-    <!-- catagory_area -->
+    <!-- category_area -->
     <div class="catagory_area">
         <div class="container">
             <div class="row cat_search">
@@ -169,9 +185,9 @@
             </div>
         </div>
     </div>
-    <!--/ catagory_area -->
+    <!--/ category_area -->
 
-    <!-- popular_catagory_area_start  -->
+    <!-- popular_category_area_start  -->
     <div class="popular_catagory_area">
         <div class="container">
             <div class="row">
@@ -233,7 +249,7 @@
             </div>
         </div>
     </div>
-    <!-- popular_catagory_area_end  -->
+    <!-- popular_category_area_end  -->
 
     <!-- job_listing_area_start  -->
     <div class="job_listing_area">

@@ -33,7 +33,7 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
 
-    <!-- header-start -->
+        <!-- header-start -->
     <header>
         <div class="header-area ">
             <div id="sticky-header" class="main-header-area">
@@ -70,16 +70,32 @@
                                     </nav>
                                 </div>
                             </div>
+                            {% if request.user.is_authenticated %}
+                            <div class="col-xl-2 col-lg-3 d-none d-lg-block">
+                                <div class="main-menu Appointment">
+                                    <ul>
+                                    <li><a href="#">{{ request.user.username }} <i class="ti-angle-down"></i></a>
+                                    <ul class="submenu">
+                                        <li><a href="#">Account</a></li>
+                                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                                    </ul>
+                                    </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% else %}
                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
-                                <div class="Appointment">
+                                <div class="main-menu Appointment">
                                     <div class="phone_num d-none d-xl-block">
-                                        <a href="#">Log in</a>
+                                        <a href="{% url 'login' %}">Log in</a>
                                     </div>
                                     <div class="d-none d-lg-block">
                                         <a class="boxed-btn3" href="#">Post a Job</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
+
                             <div class="col-12">
                                 <div class="mobile_menu d-block d-lg-none"></div>
                             </div>

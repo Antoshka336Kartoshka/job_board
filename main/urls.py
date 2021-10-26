@@ -1,10 +1,5 @@
-from main import views
-from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import include
-from django.contrib import admin
 from django.urls import path
-
+from main import views
 """job_board URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -23,10 +18,14 @@ Including another URLconf
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('main.urls')),
+    path('', views.index, name='index'),
+    path('jobs/', views.jobs, name='jobs'),
+    path('candidate/', views.candidate, name='candidate'),
+    path('job_details/', views.job_details, name='job_details'),
+    path('blog/', views.blog, name='blog'),
+    path('single_blog/', views.single_blog, name='single_blog'),
+    path('contact/', views.contact, name='contact'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('registration/', views.user_registration, name='registration')
 ]
-
-
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
