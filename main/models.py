@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
+
+
 # Create your models here.
 
 
@@ -18,7 +20,8 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     last_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
-
+    is_active = models.BooleanField(default=True, help_text='Designates whether this user '
+                                                             'should be treated as active.')
     # is_employer = models.BooleanField()
 
     EMAIL_FIELD = 'email'
