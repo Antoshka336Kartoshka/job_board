@@ -11,3 +11,5 @@ class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
 account_activation_token = AccountActivationTokenGenerator()
 
 
+def is_employer(user):
+    return user.groups.filter(name='employer').exists()

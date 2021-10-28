@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
@@ -12,7 +12,7 @@ from django.core.mail import EmailMessage
 
 from main.forms import RegistrationForm
 from main.decorators import unauthenticated_user
-from main.utils import account_activation_token
+from main.utils import account_activation_token, is_employer
 from main.models import BoardUser
 
 from logging import getLogger  # logging for Debug
@@ -114,5 +114,9 @@ def activate_user(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
-def account_settings(request):
-    return render(request, 'main/account_settings.html')
+@login_required(login_url='login')
+def account_settings(request): # Print all columns from model
+    user = request.user
+
+    context = {'user': user, 'is_employer': is_employer(user)}
+    return render(request, 'main/account_settings.html', context)

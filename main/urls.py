@@ -1,5 +1,6 @@
 from django.urls import path
 from main import views
+
 """job_board URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
