@@ -22,7 +22,7 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True, help_text='Designates whether this user '
                                                              'should be treated as active.')
-    # is_employer = models.BooleanField()
+    company_name = models.CharField(max_length=50)
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'

@@ -109,7 +109,7 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="bradcam_text">
-                        <h3>Log in</h3>
+                        <h3>Account settings</h3>
                     </div>
                 </div>
             </div>
@@ -119,30 +119,8 @@
     <div class="catagory_area">
         <div class="container">
         <div class="justify-content-center col-lg-6 offset-lg-3 text-center">
-                <h3 class="mb-30">Enter your information</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mt-10">
-                        <input type="username" name="username" placeholder="Username"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
-                            class="single-input">
-                    </div>
-                    <div class="mt-10">
-                        <input type="password" name="password" placeholder="Password"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required
-                            class="single-input">
-                    </div>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <p>{{ message }}</p>
-                        {% endfor %}
-                    {% endif %}
-                    <div class="button-group-area mt-40">
-                        <input type="submit" class="genric-btn success radius" value="Log in">
-                    </div>
-                    <p class="mt-10">Don’t have an account? <a href="{% url 'registration' %}">Sign up</a></p>
-                </form>
-                <h3>Сделать вход через соц.сети</h3>
+                <h3 class="mb-30">Account settings</h3>
+
 
         </div>
     </div>

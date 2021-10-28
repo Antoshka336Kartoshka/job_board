@@ -118,8 +118,8 @@
     <!--/ bradcam_area  -->
     <div class="catagory_area">
     <div class="container">
-        <div class="col-lg-8 col-md-8">
-                <h3 class="mb-30">Create your profile</h3>
+        <div class="justify-content-center col-lg-6 offset-lg-3 text-center">
+                <h3 class="mb-30">Create your account</h3>
                 <form method="post">
                     {% csrf_token %}
                     <div class="mt-10">
@@ -182,10 +182,15 @@
                             {% endfor %}
                         {% endif %}
                     </div>
+                      <div class="form-check mt-10">
+                        <input type="checkbox" class="form-check-input" id="user_type" value="employer" name="employer">
+                        <label class="form-check-label" for="user_type">I'm an employer</label>
+                      </div>
                     <div class="button-group-area mt-40">
                         <input type="submit" class="genric-btn success radius" value="Sign up">
                     </div>
-                    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+                    <p class="mt-10">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+
 
                 </form>
         </div>

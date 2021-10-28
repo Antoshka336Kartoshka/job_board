@@ -76,7 +76,7 @@
                                     <ul>
                                     <li><a href="#">{{ request.user.username }} <i class="ti-angle-down"></i></a>
                                     <ul class="submenu">
-                                        <li><a href="#">Account</a></li>
+                                        <li><a href="{% url 'account_settings' %}">Settings</a></li>
                                         <li><a href="{% url 'logout' %}">Logout</a></li>
                                     </ul>
                                     </li>
@@ -107,6 +107,7 @@
         </div>
     </header>
     <!-- header-end -->
+
 
     <!-- slider_area_start -->
     <div class="slider_area">
@@ -186,6 +187,7 @@
         </div>
     </div>
     <!--/ category_area -->
+
 
     <!-- popular_category_area_start  -->
     <div class="popular_catagory_area">
@@ -843,8 +845,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="{% static 'js/jquery.form.js' %}"></script>
     <script src="{% static 'js/jquery.validate.min.js' %}"></script>
     <script src="{% static 'js/mail-script.js' %}"></script>
-
-
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 

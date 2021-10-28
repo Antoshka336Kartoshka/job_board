@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect
@@ -54,9 +55,8 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
+            messages.success(request, 'You logged in')
             return redirect('index')
-        else:
-            messages.info(request, 'Sorry, username or password is incorrect')
     return render(request, 'main/login.html')
 
 
@@ -75,6 +75,11 @@ def user_registration(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            if request.POST.get('employer'):
+                user_group = Group.objects.get(name='employer')
+            else:
+                user_group = Group.objects.get(name='jobseeker')
+            user.groups.add(user_group)
             current_site = get_current_site(request)
             mail_subject = 'Activation link from Job Board'
             message = render_to_string('main/email_confirmation.html', {
@@ -88,7 +93,8 @@ def user_registration(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            return HttpResponse('Please confirm your email address to complete the registration')
+            msg = 'Registration was successful, please confirm your email and you will be able to Log in'
+            return render(request, 'main/message.html', context={'msg': msg})
     context = {'form': form}
     return render(request, 'main/registration.html', context=context)
 
@@ -102,6 +108,11 @@ def activate_user(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.') # Переделать на логин с сообщением
+        msg = 'Thank you for your email confirmation. Now you can login your account.'
+        return render(request, 'main/message.html', context={'msg': msg})
     else:
         return HttpResponse('Activation link is invalid!')
+
+
+def account_settings(request):
+    return render(request, 'main/account_settings.html')

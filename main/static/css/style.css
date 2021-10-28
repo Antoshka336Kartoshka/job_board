@@ -7472,3 +7472,30 @@ h6 {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+/* Messages */
+.alert-arrow {
+  border: 1px solid #60c060;
+  color: #54a754;
+}
+.alert-arrow .alert-icon {
+  position: relative;
+  width: 3rem;
+  background-color: #60c060;
+}
+.alert-arrow .alert-icon::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: .75rem solid transparent;
+  border-bottom: .75rem solid transparent;
+  border-left: .75rem solid #60c060;
+  right: -.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.alert-arrow .close {
+  font-size: 1rem;
+  color: #cacaca;
+}
