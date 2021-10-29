@@ -129,7 +129,7 @@
                 <label for="first_name">First name</label>
                 <input type="text" name="first_name" placeholder="First Name" id="first_name"
 									onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'" required
-									class="single-input">
+									class="single-input" value="{{ form.first_name.value }}">
                 <div class="invalid-feedback">
                   Valid first name is required.
                 </div>
@@ -138,47 +138,27 @@
                 <label for="last_name">Last name</label>
                 <input type="text" name="last_name" placeholder="Last Name" id="last_name"
 									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'" required
-									class="single-input">
+									class="single-input" value="{{ form.last_name.value }}">
                 <div class="invalid-feedback">
                   Valid last name is required.
                 </div>
               </div>
             </div>
 
-            <div class="mb-3">
-              <label for="username">Username</label>
-              <div class="input-group">
-                <input type="text" name="username" placeholder="Username" id="username"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
-									class="single-input">
-                <div class="invalid-feedback" style="width: 100%;">
-                  Your username is required.
-                </div>
-              </div>
-            </div>
 
-            <div class="mb-3">
-              <label for="email">Email <span class="text-muted"></span></label>
-              <input type="email" name="EMAIL" placeholder="Email address" id="email"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email address'" required
-									class="single-input">
-              <div class="invalid-feedback">
-                Please enter a valid email address.
-              </div>
-            </div>
               {% if is_employer %}
                 <div class="mb-3">
                   <label for="company_name">Company name</label>
                   <input type="text" name="company_name" placeholder="Company name" id="company_name"
                                         onfocus="this.placeholder = ''" onblur="this.placeholder = 'Company name'" required
-                                        class="single-input">
+                                        class="single-input" value="{{ user.company.company_name }}">
                   <div class="invalid-feedback">
                     Please enter name of your company.
                   </div>
                 </div>
               {% endif %}
 
-
+              {% if not is_employer %}
               <div class="mb-3">
                   <label for="portfolio_link">Website/Portfolio link</label>
                   <input type="text" name="portfolio_link" placeholder="https://example.com/" id="portfolio_link"
@@ -188,8 +168,10 @@
                     Please enter name your Website/Portfolio link.
                   </div>
               </div>
+              {% endif %}
+              {% if not is_employer %}
               <div class="mb-3">
-                  <label for="portfolio_link">Upload CV</label>
+                  <label for="inputGroupFile03">Upload CV</label>
                   <div class="input-group">
                     <div class="input-group-prepend">
                       <button type="button" id="inputGroupFileAddon03"><i class="fa fa-cloud-upload" aria-hidden="true"></i>
@@ -201,6 +183,7 @@
                     </div>
                   </div>
               </div>
+              {% endif %}
 
 
 

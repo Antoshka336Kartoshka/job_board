@@ -10,13 +10,13 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
-from main.forms import RegistrationForm
+from main.forms import RegistrationForm, LoginForm, AccountSettingsForm
 from main.decorators import unauthenticated_user
 from main.utils import account_activation_token, is_employer
 from main.models import BoardUser
 
 from logging import getLogger  # logging for Debug
-logger = getLogger(__name__)
+log = getLogger(__name__)
 
 
 def index(request):
@@ -49,15 +49,16 @@ def contact(request):
 
 @unauthenticated_user
 def user_login(request):
+    form = LoginForm(request)
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user:
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             messages.success(request, 'You logged in')
             return redirect('index')
-    return render(request, 'main/login.html')
+    context = {'form': form}
+    return render(request, 'main/login.html', context)
 
 
 @login_required(login_url='login')
@@ -115,8 +116,8 @@ def activate_user(request, uidb64, token):
 
 
 @login_required(login_url='login')
-def account_settings(request): # Print all columns from model
+def account_settings(request):  # Print all columns from model
     user = request.user
-
-    context = {'user': user, 'is_employer': is_employer(user)}
+    form = AccountSettingsForm(instance=request.user)
+    context = {'user': user, 'is_employer': is_employer(user), 'form': form}
     return render(request, 'main/account_settings.html', context)
