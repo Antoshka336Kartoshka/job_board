@@ -43,8 +43,8 @@ class LoginForm(AuthenticationForm):
         model = BoardUser
 
 
-class AccountSettingsForm(UserChangeForm):
+class AccountSettingsForm(ModelForm):
 
     class Meta:
         model = BoardUser
-        fields = ['first_name', 'last_name', 'email', 'portfolio_link', 'cv_file', 'user_photo', 'company']
+        fields = ['first_name', 'last_name', 'portfolio_link', 'cv_file', 'user_photo']

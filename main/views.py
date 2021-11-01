@@ -16,6 +16,7 @@ from main.utils import account_activation_token, is_employer
 from main.models import BoardUser
 
 from logging import getLogger  # logging for Debug
+
 log = getLogger(__name__)
 
 
@@ -119,5 +120,13 @@ def activate_user(request, uidb64, token):
 def account_settings(request):  # Print all columns from model
     user = request.user
     form = AccountSettingsForm(instance=request.user)
+    if request.method == 'POST':
+        form = AccountSettingsForm(request.POST, request.FILES, instance=request.user)
+        log.error(form.errors.get)
+        if form.is_valid():
+            log.warning('Valid form')
+            form.save()
+            messages.success(request, 'Your account details were changed')
     context = {'user': user, 'is_employer': is_employer(user), 'form': form}
     return render(request, 'main/account_settings.html', context)
+

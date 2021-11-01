@@ -6,17 +6,6 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 # Create your models here.
 
 
-class Company(models.Model):
-    company_name = models.CharField(max_length=50)
-
-    def __repr__(self):
-        return self.company_name
-
-    class Meta:
-        verbose_name = 'Company'
-        verbose_name_plural = 'Company'
-
-
 class BoardUser(AbstractUser):  # Модель посльзователя
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
@@ -32,11 +21,10 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True, help_text='Designates whether this user '
-                                                             'should be treated as active.')
+                                                            'should be treated as active.')
     portfolio_link = models.URLField(null=True, blank=True)
-    cv_file = models.FileField(upload_to='cv', null=True, blank=True)
-    user_photo = models.ImageField(upload_to='photo', null=True, blank=True)
-    company = models.OneToOneField(Company, on_delete=models.SET_NULL, null=True, blank=True)
+    cv_file = models.FileField(upload_to='users/cv/', null=True, blank=True)
+    user_photo = models.ImageField(upload_to='users/photo/', default='img/default_user_photo.png')
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
@@ -47,4 +35,24 @@ class BoardUser(AbstractUser):  # Модель посльзователя
         db_table = 'boarduser'
 
 
+class Job(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField()
+    responsibility = models.TextField()
+    qualifications = models.TextField()
+    benefits = models.TextField()
+    company_name = models.CharField(max_length=30)
+    company_logo = models.ImageField(upload_to='users/companies_logos/')
+    published_date = models.DateField(auto_now_add=True)
+    positions_number = models.PositiveSmallIntegerField(default=1)
+    salary_from = models.PositiveIntegerField(blank=True, null=True)
+    # Do validator for salary_from < salary_to
+    salary_to = models.PositiveIntegerField(blank=True, null=True)
+    location = models.CharField(max_length=30)
+    job_nature = models.CharField(max_length=15)
+    created_by = models.OneToOneField(BoardUser, on_delete=models.CASCADE, related_name='created_by')
+    responding_users = models.ManyToManyField(BoardUser, related_name='responding_users')
 
+    class Meta:
+        verbose_name = 'Job'
+        verbose_name_plural = 'Jobs'
