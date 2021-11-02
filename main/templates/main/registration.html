@@ -2,100 +2,102 @@
 {% load static %}
 {% block content %}
 
-    <!-- body-start -->
-        <!-- bradcam_area  -->
-    <div class="bradcam_area bradcam_bg_1">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="bradcam_text">
-                        <h3>Sign up</h3>
-                    </div>
+<!-- body-start -->
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Sign up</h3>
                 </div>
             </div>
         </div>
     </div>
-    <!--/ bradcam_area  -->
-    <div class="catagory_area">
+</div>
+<!--/ bradcam_area  -->
+<div class="catagory_area">
     <div class="container">
         <div class="justify-content-center col-lg-6 offset-lg-3 text-center">
-                <h3 class="mb-30">Create your account</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mt-10">
-                        <input type="text" name="{{ form.username.name }}" placeholder="Username"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
-                            class="single-input" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
-                        {% if form.username.errors %}
-                            {% for error in form.username.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="text" name="{{ form.first_name.name }}" placeholder="First Name"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'" required
-                            class="single-input" value="{% if form.first_name.value %}{{form.first_name.value}}{% endif %}">
-                        {% if form.first_name.errors %}
-                            {% for error in form.first_name.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="text" name="{{ form.last_name.name }}" placeholder="Last Name"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'" required
-                            class="single-input" value="{% if form.last_name.value %}{{form.last_name.value}}{% endif %}">
-                        {% if form.last_name.errors %}
-                            {% for error in form.last_name.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="email" name="{{ form.email.name }}" placeholder="Email address"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email address'" required
-                            class="single-input" value="{% if form.email.value %}{{form.email.value}}{% endif %}">
-                        {% if form.email.errors %}
-                            {% for error in form.email.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="password" name="{{ form.password1.name }}" placeholder="Password"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required
-                            class="single-input">
-                        {% if form.password1.errors %}
-                            {% for error in form.password1.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="password" name="{{ form.password2.name }}" placeholder="Confirm password"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Confirm password'" required
-                            class="single-input">
-                        {% if form.password2.errors %}
-                            {% for error in form.password2.errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                      <div class="form-check mt-10">
-                        <input type="checkbox" class="form-check-input" id="user_type" value="employer" name="employer">
-                        <label class="form-check-label" for="user_type">I'm an employer</label>
-                      </div>
-                    <div class="button-group-area mt-40">
-                        <input type="submit" class="genric-btn boxed-btn3" value="Sign up">
-                    </div>
-                    <p class="mt-10">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+            <h3 class="mb-30">Create your account</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-10">
+                    <input type="text" name="{{ form.username.name }}" placeholder="Username"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
+                           class="single-input" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
+                    {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="text" name="{{ form.first_name.name }}" placeholder="First Name"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'" required
+                           class="single-input"
+                           value="{% if form.first_name.value %}{{form.first_name.value}}{% endif %}">
+                    {% if form.first_name.errors %}
+                    {% for error in form.first_name.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="text" name="{{ form.last_name.name }}" placeholder="Last Name"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'" required
+                           class="single-input"
+                           value="{% if form.last_name.value %}{{form.last_name.value}}{% endif %}">
+                    {% if form.last_name.errors %}
+                    {% for error in form.last_name.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="email" name="{{ form.email.name }}" placeholder="Email address"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email address'" required
+                           class="single-input" value="{% if form.email.value %}{{form.email.value}}{% endif %}">
+                    {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="password" name="{{ form.password1.name }}" placeholder="Password"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required
+                           class="single-input">
+                    {% if form.password1.errors %}
+                    {% for error in form.password1.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="password" name="{{ form.password2.name }}" placeholder="Confirm password"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Confirm password'" required
+                           class="single-input">
+                    {% if form.password2.errors %}
+                    {% for error in form.password2.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-check mt-10">
+                    <input type="checkbox" class="form-check-input" id="user_type" value="employer" name="employer">
+                    <label class="form-check-label" for="user_type">I'm an employer</label>
+                </div>
+                <div class="button-group-area mt-40">
+                    <input type="submit" class="genric-btn boxed-btn3" value="Sign up">
+                </div>
+                <p class="mt-10">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
 
 
-                </form>
+            </form>
         </div>
     </div>
-    </div>
-    <!-- body-end -->
+</div>
+<!-- body-end -->
 
 {% endblock %}

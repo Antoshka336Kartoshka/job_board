@@ -1,89 +1,91 @@
 {% extends 'main/base_template.html' %}
 {% load static %}
 {% block content %}
-    <!-- bradcam_area  -->
-    <div class="bradcam_area bradcam_bg_1">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="bradcam_text">
-                        <h3>Account settings</h3>
-                    </div>
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Account settings</h3>
                 </div>
             </div>
-        </div>
-    </div>
-    <!--/ bradcam_area  -->
-
-    <!-- body -->
-    <div class="catagory_area ">
-        <div class="container">
-            <div class="row">
-        <div class="justify-content-center col-lg-6 offset-lg-3 text-center ">
-          <form class="needs-validation" novalidate method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-              <div class="thumb justify-content-center col-lg-6 offset-lg-3">
-                    <img src="{{ form.user_photo.value.url }}" alt="" class="rounded-circle" style="max-width:70%; height:auto;">
-                </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="first_name">First name</label>
-                <input type="text" name="first_name" placeholder="First Name" id="first_name"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'" required
-									class="single-input" value="{{ form.first_name.value }}">
-                <div class="invalid-feedback">
-                  Valid first name is required.
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="last_name">Last name</label>
-                <input type="text" name="last_name" placeholder="Last Name" id="last_name"
-									onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'" required
-									class="single-input" value="{{ form.last_name.value }}">
-                <div class="invalid-feedback">
-                  Valid last name is required.
-                </div>
-              </div>
-            </div>
-
-
-              {% if not is_employer %}
-              <div class="mb-3">
-                  <label for="portfolio_link">Website/Portfolio link</label>
-                  <input type="text" name="portfolio_link" placeholder="https://example.com/" id="portfolio_link"
-                                        onfocus="this.placeholder = ''" onblur="this.placeholder = 'https://example.com/'" required
-                                        class="single-input" value="{{ form.portfolio_link.value }}">
-                  <div class="invalid-feedback">
-                    Please enter name your Website/Portfolio link.
-                  </div>
-              </div>
-              {% endif %}
-              {% if not is_employer %}
-              <div class="mb-3">
-                  <label for="formFile" class="form-label">CV file</label>
-                  <input class="form-control" type="file" id="formFile" name="cv_file">
-                  {% if form.cv_file.value %}
-                    <p>Your current CV: <a href="{{ form.cv_file.value.url }}">{{ form.cv_file.value }}</a></p>
-                  {% endif %}
-                </div>
-              <div class="mb-3">
-                  <label for="photo" class="form-label">Profile photo</label>
-                  <input class="form-control" type="file" id="photo" name="user_photo">
-                </div>
-              {% endif %}
-              {% if messages %}
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-              {% endif %}
-
-            <div class="mb-3">
-                <input type="submit" class="genric-btn boxed-btn3" value="Change details">
-            </div>
-          </form>
-        </div>
         </div>
     </div>
 </div>
-    <!-- body-end -->
+<!--/ bradcam_area  -->
+
+<!-- body -->
+<div class="catagory_area ">
+    <div class="container">
+        <div class="row">
+            <div class="justify-content-center col-lg-6 offset-lg-3 text-center ">
+                <form class="needs-validation" novalidate method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="thumb justify-content-center col-lg-6 offset-lg-3">
+                        <img src="{{ form.user_photo.value.url }}" alt="" class="rounded-circle"
+                             style="max-width:70%; height:auto;">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="first_name">First name</label>
+                            <input type="text" name="first_name" placeholder="First Name" id="first_name"
+                                   onfocus="this.placeholder = ''" onblur="this.placeholder = 'First Name'" required
+                                   class="single-input" value="{{ form.first_name.value }}">
+                            <div class="invalid-feedback">
+                                Valid first name is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="last_name">Last name</label>
+                            <input type="text" name="last_name" placeholder="Last Name" id="last_name"
+                                   onfocus="this.placeholder = ''" onblur="this.placeholder = 'Last Name'" required
+                                   class="single-input" value="{{ form.last_name.value }}">
+                            <div class="invalid-feedback">
+                                Valid last name is required.
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% if not is_employer %}
+                    <div class="mb-3">
+                        <label for="portfolio_link">Website/Portfolio link</label>
+                        <input type="text" name="portfolio_link" placeholder="https://example.com/" id="portfolio_link"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'https://example.com/'"
+                               required
+                               class="single-input" value="{{ form.portfolio_link.value }}">
+                        <div class="invalid-feedback">
+                            Please enter name your Website/Portfolio link.
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if not is_employer %}
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">CV file</label>
+                        <input class="form-control" type="file" id="formFile" name="cv_file">
+                        {% if form.cv_file.value %}
+                        <p>Your current CV: <a href="{{ form.cv_file.value.url }}">{{ form.cv_file.value }}</a></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Profile photo</label>
+                        <input class="form-control" type="file" id="photo" name="user_photo">
+                    </div>
+                    {% if messages %}
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <input type="submit" class="genric-btn boxed-btn3" value="Change details">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- body-end -->
 {% endblock %}

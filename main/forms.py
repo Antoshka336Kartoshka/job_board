@@ -1,8 +1,7 @@
 from django.forms import ModelForm
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms.fields import CharField, EmailField
-from django.utils.translation import gettext_lazy as _
-from main.models import BoardUser
+from main.models import BoardUser, Job
 from django import forms
 
 
@@ -48,3 +47,10 @@ class AccountSettingsForm(ModelForm):
     class Meta:
         model = BoardUser
         fields = ['first_name', 'last_name', 'portfolio_link', 'cv_file', 'user_photo']
+
+
+class JobForm(ModelForm):
+
+    class Meta:
+        model = Job
+        exclude = ['created_by', 'responding_users', 'published_date']

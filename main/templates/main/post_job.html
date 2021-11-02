@@ -1,0 +1,136 @@
+{% extends 'main/base_template.html' %}
+{% load static %}
+{% block content %}
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Post a job</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ bradcam_area  -->
+<div class="job_details_area justify-content-center col-lg-6 offset-lg-3 bg-white">
+    <div class="apply_job_form white-bg">
+        <h4 class="text-center">Job information</h4>
+        <form id="job_form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-12">
+                <div class="input_field">
+                    <input type="text" placeholder="Job name" name="{{ form.name.name }}" required>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <textarea name="{{ form.description.name }}" cols="30" rows="10" placeholder="Description"
+                              required></textarea>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <textarea name="{{ form.responsibility.name }}" cols="30" rows="10" placeholder="Responsibility"
+                              required></textarea>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <textarea name="{{ form.qualifications.name }}" cols="30" rows="10" placeholder="Qualifications"
+                              required></textarea>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <textarea name="{{ form.benefits.name }}" cols="30" rows="10" placeholder="Benefits"
+                              required></textarea>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <input type="text" placeholder="Company name" name="{{ form.company_name.name }}" required>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" id="inputGroupFileAddon03"><i class="fa fa-cloud-upload"
+                                                                            aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile01"
+                               aria-describedby="inputGroupFileAddon01" name="{{ form.company_logo.name }}">
+                        <label class="custom-file-label" for="inputGroupFile01">Company logo</label>
+                        {% if form.cv_file.value %}
+                        <p>Your current CV: <a href="{{ form.company_logo.value.url }}">{{ form.cv_file.value }}</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row col-md-5">
+                <p class="col-md-5">Positions: </p>
+                <div class="default-select col-md-1" id="default-select">
+                    <select form="job_form" name="{{ form.positions_number.name }}">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="row col-md-12">
+                <p class="col-md-2">Salary: </p>
+                <div class="col-md-3 mb-2">
+                    <div class="input_field">
+                        <input type="text" placeholder="from" name="{{ form.salary_from.name }}">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <div class="input_field">
+                        <input type="text" placeholder="to" name="{{ form.salary_to.name }}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="input_field">
+                    <input type="text" placeholder="Location" name="{{ form.location.name }}" required>
+                </div>
+            </div>
+            <div class="row col-md-5">
+                <p class="col-md-6">Job nature: </p>
+                <div class="default-select col-md-1" id="default-select2">
+                    <select form="job_form" name="{{ form.job_nature.name }}">
+                        <option value="Full-time">Full-time</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Casual work">Casual work</option>
+                        <option value="Temporary work">Temporary work</option>
+                        <option value="Working from home">Working from home</option>
+                        <option value="Portfolio work">Portfolio work</option>
+                    </select>
+                </div>
+            </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="submit_btn">
+            <button class="boxed-btn3 w-100" type="submit">Post</button>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+</div>
+
+
+{% endblock %}

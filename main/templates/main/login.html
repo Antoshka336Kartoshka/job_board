@@ -2,59 +2,59 @@
 {% load static %}
 {% block content %}
 
-    <!-- body-start -->
-        <!-- bradcam_area  -->
-    <div class="bradcam_area bradcam_bg_1">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="bradcam_text">
-                        <h3>Log in</h3>
-                    </div>
+<!-- body-start -->
+<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Log in</h3>
                 </div>
             </div>
         </div>
     </div>
-    <!--/ bradcam_area  -->
-    <div class="catagory_area">
-        <div class="container">
+</div>
+<!--/ bradcam_area  -->
+<div class="catagory_area">
+    <div class="container">
         <div class="justify-content-center col-lg-6 offset-lg-3 text-center">
-                <h3 class="mb-30">Enter your information</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="mt-10">
-                        <input type="text" name="{{ form.username.name }}" placeholder="Username"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
-                            class="single-input">
-                            {% if form.username.errors %}
-                                {% for error in form.username.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            {% endif %}
-                    </div>
-                    <div class="mt-10">
-                        <input type="password" name="{{ form.password.name }}" placeholder="Password"
-                            onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required
-                            class="single-input">
-                            {% if form.password.errors %}
-                                {% for error in form.password.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            {% endif %}
-                    </div>
-                    <div class="mt-10">
-                            {{ form.non_field_errors }}
-                    </div>
-                    <div class="button-group-area mt-40">
-                        <input type="submit" class="genric-btn boxed-btn3" value="Log in">
-                    </div>
-                    <p class="mt-10">Don’t have an account? <a href="{% url 'registration' %}">Sign up</a></p>
+            <h3 class="mb-30">Enter your information</h3>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-10">
+                    <input type="text" name="{{ form.username.name }}" placeholder="Username"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required
+                           class="single-input">
+                    {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    <input type="password" name="{{ form.password.name }}" placeholder="Password"
+                           onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required
+                           class="single-input">
+                    {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-10">
+                    {{ form.non_field_errors }}
+                </div>
+                <div class="button-group-area mt-40">
+                    <input type="submit" class="genric-btn boxed-btn3" value="Log in">
+                </div>
+                <p class="mt-10">Don’t have an account? <a href="{% url 'registration' %}">Sign up</a></p>
 
-                </form>
+            </form>
 
         </div>
     </div>
 </div>
-    <!-- body-end -->
+<!-- body-end -->
 
 {% endblock %}

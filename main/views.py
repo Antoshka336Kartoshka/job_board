@@ -1,19 +1,20 @@
 from django.http import HttpResponse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import Group
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect, get_object_or_404
+from django.core.mail import EmailMessage
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
 
-from main.forms import RegistrationForm, LoginForm, AccountSettingsForm
+from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm
 from main.decorators import unauthenticated_user
 from main.utils import account_activation_token, is_employer
-from main.models import BoardUser
+from main.models import BoardUser, Job
 
 from logging import getLogger  # logging for Debug
 
@@ -25,15 +26,25 @@ def index(request):
 
 
 def jobs(request):
-    return render(request, 'main/jobs.html')
+    jobs_list = Job.objects.all().order_by('-published_date')
+    paginator = Paginator(jobs_list, 5, 1)
+    if 'page' in request.GET:
+        page_num = request.GET['page']
+    else:
+        page_num = 1
+    page = paginator.get_page(page_num)
+    context = {'jobs_list': page.object_list, 'page': page}
+    return render(request, 'main/jobs.html', context)
+
+
+def job_details(request, pk):
+    job = Job.objects.get(pk=pk)
+    context = {'job': job}
+    return render(request, 'main/job_details.html', context)
 
 
 def candidate(request):
     return render(request, 'main/candidate.html')
-
-
-def job_details(request):
-    return render(request, 'main/job_details.html')
 
 
 def blog(request):
@@ -56,7 +67,7 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, 'You logged in')
+            messages.error(request, 'You logged in')
             return redirect('index')
     context = {'form': form}
     return render(request, 'main/login.html', context)
@@ -95,8 +106,9 @@ def user_registration(request):
                 mail_subject, message, to=[to_email]
             )
             email.send()
-            msg = 'Registration was successful, please confirm your email and you will be able to Log in'
-            return render(request, 'main/message.html', context={'msg': msg})
+            msg = 'Registration was successful, please confirm your email'
+            messages.success(request, msg)
+            return redirect('index')
     context = {'form': form}
     return render(request, 'main/registration.html', context=context)
 
@@ -122,11 +134,24 @@ def account_settings(request):  # Print all columns from model
     form = AccountSettingsForm(instance=request.user)
     if request.method == 'POST':
         form = AccountSettingsForm(request.POST, request.FILES, instance=request.user)
-        log.error(form.errors.get)
         if form.is_valid():
-            log.warning('Valid form')
             form.save()
             messages.success(request, 'Your account details were changed')
     context = {'user': user, 'is_employer': is_employer(user), 'form': form}
     return render(request, 'main/account_settings.html', context)
 
+
+@login_required(login_url='login')
+@user_passes_test(is_employer)  # Добавить сообщение о том что только работодатели могут добавлять вакансии
+def post_job(request):
+    form = JobForm
+    if request.method == 'POST':
+        form = JobForm(request.POST, request.FILES)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.created_by = request.user
+            job.save()
+            messages.success(request, 'Your job was added')
+            return redirect('index')  # <- должен быть переход на страницу вакансии
+    context = {'form': form}
+    return render(request, 'main/post_job.html', context)

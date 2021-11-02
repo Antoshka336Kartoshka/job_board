@@ -42,7 +42,7 @@ class Job(models.Model):
     qualifications = models.TextField()
     benefits = models.TextField()
     company_name = models.CharField(max_length=30)
-    company_logo = models.ImageField(upload_to='users/companies_logos/')
+    company_logo = models.ImageField(upload_to='users/companies_logos/', default='img/default_company_logo.png')
     published_date = models.DateField(auto_now_add=True)
     positions_number = models.PositiveSmallIntegerField(default=1)
     salary_from = models.PositiveIntegerField(blank=True, null=True)
@@ -50,8 +50,11 @@ class Job(models.Model):
     salary_to = models.PositiveIntegerField(blank=True, null=True)
     location = models.CharField(max_length=30)
     job_nature = models.CharField(max_length=15)
-    created_by = models.OneToOneField(BoardUser, on_delete=models.CASCADE, related_name='created_by')
+    created_by = models.ForeignKey(BoardUser, on_delete=models.CASCADE, related_name='created_by')
     responding_users = models.ManyToManyField(BoardUser, related_name='responding_users')
+
+    def __repr__(self):
+        return self.name
 
     class Meta:
         verbose_name = 'Job'
