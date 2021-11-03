@@ -12,7 +12,6 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
     <!-- Place favicon.ico in the root directory -->
 
-
     <!-- CSS here -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
@@ -25,15 +24,10 @@
     <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/slicknav.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-    <!-- <link rel="stylesheet" href="css/responsive.css"> -->
+    <!--<link rel="stylesheet" href="{% static 'css/responsive.css' %}">-->
 </head>
 
 <body>
-<!--[if lte IE 9]>
-<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade
-    your browser</a> to improve your experience and security.</p>
-<![endif]-->
 
 <!-- header-start -->
 <header>
@@ -75,6 +69,7 @@
                                         <li><a href="#">{{ request.user.username }} <i class="ti-angle-down"></i></a>
                                             <ul class="submenu">
                                                 <li><a href="{% url 'account_settings' %}">Settings</a></li>
+                                                <li><a href="{% url 'applied_jobs' %}">Your jobs</a></li>
                                                 <li><a href="{% url 'logout' %}">Logout</a></li>
                                             </ul>
                                         </li>

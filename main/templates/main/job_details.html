@@ -67,7 +67,44 @@
                         {{ job.benefits }}
                     </div>
                     <div class="submit_btn">
-                        <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
+                        {% if is_employer %}
+
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn genric-btn danger radius w-100" data-toggle="modal"
+                                data-target="#staticBackdrop">
+                            Delete this job
+                        </button>
+                        <!-- Модальное окно -->
+                        <div class="modal" id="staticBackdrop" data-backdrop="false" data-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered ">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Заголовок модального окна</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        You are going to delete this job. Are you sure?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="genric-btn default radius" data-dismiss="modal">
+                                            Закрыть
+                                        </button>
+                                        <a href=""><button type="button" class="btn genric-btn danger radius">Удалить</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% elif not applied %}
+                        <a href="{% url 'job_apply' job.pk %}">
+                            <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
+                        </a>
+                        {% else %}
+                        <a href="" class="genric-btn w-100 disable radius">You are already applied for this job</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -100,4 +137,7 @@
     </div>
 </div>
 
+
 {% endblock %}
+
+

@@ -5,15 +5,22 @@
 <div class="bradcam_area bradcam_bg_1">
     <div class="container">
         <div class="row">
-            <div class="col-xl-12">
+            <div class="col-lg-7 col-md-6">
                 <div class="bradcam_text">
+                    {% for message in messages %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
                     <h3>Account settings</h3>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!--/ bradcam_area  -->
+
 
 <!-- body -->
 <div class="catagory_area ">
@@ -46,15 +53,27 @@
                             </div>
                         </div>
                     </div>
-
-
+                    {% if not is_employer %}
+                    <div class="mb-3">
+                        <label for="speciality">Speciality</label>
+                        <input type="text" name="speciality" placeholder="Speciality" id="speciality"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Speciality'"
+                               required
+                               class="single-input"
+                               value="{% if form.speciality.value %}{{form.speciality.value}}{% endif %}">
+                        <div class="invalid-feedback">
+                            Please enter name your speciality.
+                        </div>
+                    </div>
+                    {% endif %}
                     {% if not is_employer %}
                     <div class="mb-3">
                         <label for="portfolio_link">Website/Portfolio link</label>
                         <input type="text" name="portfolio_link" placeholder="https://example.com/" id="portfolio_link"
                                onfocus="this.placeholder = ''" onblur="this.placeholder = 'https://example.com/'"
                                required
-                               class="single-input" value="{{ form.portfolio_link.value }}">
+                               class="single-input"
+                               value="{% if form.portfolio_link.value %}{{form.portfolio_link.value}}{% endif %}">
                         <div class="invalid-feedback">
                             Please enter name your Website/Portfolio link.
                         </div>
@@ -73,11 +92,6 @@
                         <label for="photo" class="form-label">Profile photo</label>
                         <input class="form-control" type="file" id="photo" name="user_photo">
                     </div>
-                    {% if messages %}
-                    {% for message in messages %}
-                    <p>{{ message }}</p>
-                    {% endfor %}
-                    {% endif %}
 
                     <div class="mb-3">
                         <input type="submit" class="genric-btn boxed-btn3" value="Change details">

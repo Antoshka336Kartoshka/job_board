@@ -25,9 +25,9 @@ class LoginForm(AuthenticationForm):
 
     def get_invalid_login_error(self):
 
-        user = BoardUser.objects.get(username=self.cleaned_data.get('username'))
+        user = self.get_user()
 
-        if not user.is_active and user:
+        if user and not user.is_active:
             raise forms.ValidationError(
                 self.error_messages['inactive'],
                 code='inactive', )
@@ -46,7 +46,7 @@ class AccountSettingsForm(ModelForm):
 
     class Meta:
         model = BoardUser
-        fields = ['first_name', 'last_name', 'portfolio_link', 'cv_file', 'user_photo']
+        fields = ['first_name', 'last_name', 'speciality', 'portfolio_link', 'cv_file', 'user_photo']
 
 
 class JobForm(ModelForm):

@@ -6,7 +6,9 @@ urlpatterns = [
     path('jobs/', views.jobs, name='jobs'),
     path('jobs/post/', views.post_job, name='post_job'),
     path('jobs/<int:pk>', views.job_details, name='job_details'),
-    path('candidate/', views.candidate, name='candidate'),
+    path('jobs/<int:pk>/apply/', views.job_apply, name='job_apply'),
+    path('candidates/', views.candidates, name='candidate'),
+    path('candidates/<int:pk>', views.candidate_details, name='candidate_details'),
     path('blog/', views.blog, name='blog'),
     path('single_blog/', views.single_blog, name='single_blog'),
     path('contact/', views.contact, name='contact'),
@@ -15,4 +17,6 @@ urlpatterns = [
     path('registration/', views.user_registration, name='registration'),
     path('activate/<uidb64>/<token>/', views.activate_user, name='activate'),
     path('account/settings/', views.account_settings, name='account_settings'),
+    path('account/jobs/', views.applied_jobs, name='applied_jobs'),
+
 ]

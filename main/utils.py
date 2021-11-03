@@ -1,4 +1,3 @@
-from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from six import text_type
 
@@ -13,3 +12,7 @@ account_activation_token = AccountActivationTokenGenerator()
 
 def is_employer(user):
     return user.groups.filter(name='employer').exists()
+
+
+def is_jobseeker(user):
+    return user.groups.filter(name='jobseeker').exists()
