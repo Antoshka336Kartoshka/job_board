@@ -1,8 +1,7 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.forms.fields import CharField, EmailField
 from main.models import BoardUser, Job
-from django import forms
 
 
 class RegistrationForm(UserCreationForm):
@@ -28,11 +27,11 @@ class LoginForm(AuthenticationForm):
         user = self.get_user()
 
         if user and not user.is_active:
-            raise forms.ValidationError(
+            raise ValidationError(
                 self.error_messages['inactive'],
                 code='inactive', )
         else:
-            return forms.ValidationError(
+            return ValidationError(
                 self.error_messages['invalid_login'],
                 code='invalid_login',
                 params={'username': self.username_field.verbose_name},
@@ -43,14 +42,12 @@ class LoginForm(AuthenticationForm):
 
 
 class AccountSettingsForm(ModelForm):
-
     class Meta:
         model = BoardUser
         fields = ['first_name', 'last_name', 'speciality', 'portfolio_link', 'cv_file', 'user_photo']
 
 
 class JobForm(ModelForm):
-
     class Meta:
         model = Job
         exclude = ['created_by', 'responding_users', 'published_date']

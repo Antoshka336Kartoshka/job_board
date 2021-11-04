@@ -1,6 +1,7 @@
 {% extends 'main/base_template.html' %}
 {% load static %}
 {% block content %}
+{% load countries %}
 <!-- bradcam_area  -->
 <div class="bradcam_area bradcam_bg_1">
     <div class="container">
@@ -70,8 +71,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row col-md-5">
-                <p class="col-md-5">Positions: </p>
+            <div class="row col-md-12">
+                <p class="col-md-2">Positions: </p>
                 <div class="default-select col-md-1" id="default-select">
                     <select form="job_form" name="{{ form.positions_number.name }}">
                         <option value="1">1</option>
@@ -102,12 +103,20 @@
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="input_field">
-                    <input type="text" placeholder="Location" name="{{ form.location.name }}" required>
+                <div class="input_field" id="default-select3">
+                    <input type="text" placeholder="Location" name="{{ form.location.name }}" list="countries" required>
+                    {% get_countries as countries %}
+                    <datalist id="countries">
+                        {% for country in countries %}
+                        <option value="{{ country.name }}">
+                        {% endfor %}
+
+                    </datalist>
                 </div>
             </div>
-            <div class="row col-md-5">
-                <p class="col-md-6">Job nature: </p>
+            <br>
+            <div class="row col-md-12">
+                <p class="col-md-4">Job nature: </p>
                 <div class="default-select col-md-1" id="default-select2">
                     <select form="job_form" name="{{ form.job_nature.name }}">
                         <option value="Full-time">Full-time</option>
@@ -119,14 +128,17 @@
                     </select>
                 </div>
             </div>
+            <br>
+            <div class="col-md-12">
+                <div class="submit_btn">
+                    <button class="boxed-btn3 w-100" type="submit">Post</button>
+                </div>
+            </div>
     </div>
 
+</div>
 
-    <div class="col-md-12">
-        <div class="submit_btn">
-            <button class="boxed-btn3 w-100" type="submit">Post</button>
-        </div>
-    </div>
+
 </div>
 </form>
 </div>
