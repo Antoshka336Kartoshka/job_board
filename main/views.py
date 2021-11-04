@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
@@ -37,7 +37,7 @@ def jobs(request):
     return render(request, 'main/jobs.html', context)
 
 
-def job_details(request, pk):
+def job_details(request, pk: int):
     job = Job.objects.get(pk=pk)
     applied = False
     employer = False
@@ -48,6 +48,50 @@ def job_details(request, pk):
             applied = True
     context = {'job': job, 'applied': applied, 'is_employer': employer}
     return render(request, 'main/job_details.html', context)
+
+
+@login_required(login_url='login')
+@employer_permission
+def job_post(request):
+    form = JobForm
+    if request.method == 'POST':
+        form = JobForm(request.POST, request.FILES)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.created_by = request.user
+            job.save()
+            messages.success(request, 'Your job was added')
+            return redirect('index')  # <- должен быть переход на страницу вакансии
+    context = {'form': form}
+    return render(request, 'main/job_post.html', context)
+
+
+@login_required(login_url='login')
+@jobseeker_permission
+def job_apply(request, pk: int):
+    user = request.user
+    log.debug(user)
+    if user.portfolio_link and user.cv_file:
+        job = Job.objects.get(pk=pk)
+        if user not in job.responding_users.all():
+            job.responding_users.add(user)
+            msg = 'You are successfully applied for a job'
+        else:
+            msg = 'You are already applied for this job'
+        messages.info(request, msg)
+        return redirect('index')  # <- Rebuild to redirect on user applied jobs pageuse
+    else:
+        messages.error(request, 'You should add CV and Portfolio before applying for a job')
+        return redirect('account_settings')
+
+
+@login_required(login_url='login')
+@employer_permission
+def job_delete(request, pk: int):
+    job = get_object_or_404(Job, pk=pk)
+    job.delete()
+    messages.success(request, 'Job was successfully deleted')
+    return redirect('index')
 
 
 def candidates(request):
@@ -62,7 +106,7 @@ def candidates(request):
     return render(request, 'main/candidates.html', context)
 
 
-def candidate_details(request, pk):
+def candidate_details(request, pk: int):
     candidate = BoardUser.objects.get(pk=pk)
     if is_employer(candidate):
         raise Http404('User does not exists')
@@ -175,38 +219,3 @@ def applied_jobs(request):
         jobs_list = request.user.applied_jobs.all()
     context = {'jobs_list': jobs_list}
     return render(request, 'main/jobs.html', context)
-
-
-@login_required(login_url='login')
-@employer_permission
-def post_job(request):
-    form = JobForm
-    if request.method == 'POST':
-        form = JobForm(request.POST, request.FILES)
-        if form.is_valid():
-            job = form.save(commit=False)
-            job.created_by = request.user
-            job.save()
-            messages.success(request, 'Your job was added')
-            return redirect('index')  # <- должен быть переход на страницу вакансии
-    context = {'form': form}
-    return render(request, 'main/post_job.html', context)
-
-
-@login_required(login_url='login')
-@jobseeker_permission
-def job_apply(request, pk):
-    user = request.user
-    log.debug(user)
-    if user.portfolio_link and user.cv_file:
-        job = Job.objects.get(pk=pk)
-        if user not in job.responding_users.all():
-            job.responding_users.add(user)
-            msg = 'You are successfully applied for a job'
-        else:
-            msg = 'You are already applied for this job'
-        messages.info(request, msg)
-        return redirect('index')  # <- Rebuild to redirect on user applied jobs pageuse
-    else:
-        messages.error(request, 'You should add CV and Portfolio before applying for a job')
-        return redirect('account_settings')
