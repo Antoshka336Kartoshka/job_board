@@ -53,13 +53,13 @@
                     <div class="single_wrap">
                         <h4>Responsibility</h4>
                         <ul>
-                            {{ job.responsibility }}
+                            {{ job.responsibility|linenumbers|linebreaksbr }}
                         </ul>
                     </div>
                     <div class="single_wrap">
                         <h4>Qualifications</h4>
                         <ul>
-                            {{ job.qualifications }}
+                            {{ job.qualifications|linenumbers|linebreaksbr }}
                         </ul>
                     </div>
                     <div class="single_wrap">
@@ -117,7 +117,17 @@
                         <ul>
                             <li>Published on: <span>{{ job.published_date }}</span></li>
                             <li>Vacancy: <span>{{ job.positions_number }} Position</span></li>
-                            <li>Salary: <span>{{ job.salary_from }}k - {{ job.salary_to }}k/y</span></li>
+                            <li>Salary: <span>
+                                {% if not job.salary_from and not job_salary_to %}
+                                Contractual
+                                {% elif job.salary_from and not job_salary_to %}
+                                from {{ job.salary_from }}
+                                {% elif not job.salary_from and job_salary_to %}
+                                to {{ job.job_salary_to }}
+                                {% else %}
+                                {{ job.salary_from }}k - {{ job.salary_to }}k/y
+                                {% endif %}
+                            </span></li>
                             <li>Location: <span>{{ job.location }}</span></li>
                             <li>Job Nature: <span> {{ job.job_nature }}</span></li>
                         </ul>

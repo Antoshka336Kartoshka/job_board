@@ -24,35 +24,66 @@
                 <div class="input_field">
                     <input type="text" placeholder="Job name" name="{{ form.name.name }}" required>
                 </div>
+                {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input_field">
                     <textarea name="{{ form.description.name }}" cols="30" rows="10" placeholder="Description"
                               required></textarea>
                 </div>
+                {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input_field">
                     <textarea name="{{ form.responsibility.name }}" cols="30" rows="10" placeholder="Responsibility"
                               required></textarea>
                 </div>
+                {% if form.responsibility.errors %}
+                {% for error in form.responsibility.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
+
             <div class="col-md-12">
                 <div class="input_field">
                     <textarea name="{{ form.qualifications.name }}" cols="30" rows="10" placeholder="Qualifications"
                               required></textarea>
                 </div>
+                {% if form.qualifications.errors %}
+                {% for error in form.qualifications.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input_field">
                     <textarea name="{{ form.benefits.name }}" cols="30" rows="10" placeholder="Benefits"
                               required></textarea>
                 </div>
+                {% if form.benefits.errors %}
+                {% for error in form.benefits.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input_field">
                     <input type="text" placeholder="Company name" name="{{ form.company_name.name }}" required>
                 </div>
+                {% if form.company_name.errors %}
+                {% for error in form.company_name.errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input-group">
@@ -69,6 +100,11 @@
                         <p>Your current CV: <a href="{{ form.company_logo.value.url }}">{{ form.cv_file.value }}</a></p>
                         {% endif %}
                     </div>
+                    {% if form.company_logo.errors %}
+                    {% for error in form.company_logo.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <div class="row col-md-12">
@@ -86,21 +122,38 @@
                         <option value="9">9</option>
                         <option value="10">10</option>
                     </select>
+                    {% if form.positions.errors %}
+                    {% for error in form.positions.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <br>
+            <p class="col-md-12">{{ form.salary_to.help_text }}</p>
+
             <div class="row col-md-12">
                 <p class="col-md-2">Salary: </p>
                 <div class="col-md-3 mb-2">
                     <div class="input_field">
-                        <input type="text" placeholder="from" name="{{ form.salary_from.name }}">
+                        <input type="number" placeholder="from" name="{{ form.salary_from.name }}">
                     </div>
+                    {% if form.salary_from.errors %}
+                    {% for error in form.salary_from.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
                 </div>
                 <div class="col-md-3 mb-2">
                     <div class="input_field">
-                        <input type="text" placeholder="to" name="{{ form.salary_to.name }}">
+                        <input type="number" placeholder="to" name="{{ form.salary_to.name }}">
                     </div>
                 </div>
+                {% if form.salary_to.errors %}
+                {% for error in form.salary_to.errors %}
+                <p class="col-md-12">{{ error }}</p>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-md-12">
                 <div class="input_field" id="default-select3">
@@ -109,9 +162,13 @@
                     <datalist id="countries">
                         {% for country in countries %}
                         <option value="{{ country.name }}">
-                        {% endfor %}
-
+                            {% endfor %}
                     </datalist>
+                    {% if form.location.errors %}
+                    {% for error in form.location.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
             <br>

@@ -1,21 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 # Create your models here.
 
 
 class BoardUser(AbstractUser):  # Модель посльзователя
-    username_validator = UnicodeUsernameValidator()
-    username = models.CharField(
-        max_length=30,
-        unique=True,
-        help_text='Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.',
-        validators=[username_validator],
-        error_messages={
-            'unique': ["A user with that username already exists."]},
-        default=None)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
@@ -26,9 +16,13 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     cv_file = models.FileField(upload_to='users/cv/', null=True, blank=True)
     user_photo = models.ImageField(upload_to='users/photo/', default='img/default_user_photo.png')
     speciality = models.CharField(max_length=30, null=True, blank=True)
+    company = models.OneToOneField('Company', on_delete=models.CASCADE, null=True)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         verbose_name = 'User'
@@ -36,19 +30,41 @@ class BoardUser(AbstractUser):  # Модель посльзователя
         db_table = 'boarduser'
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
+
+class Company(models.Model):
+    name = models.CharField(max_length=40)
+    company_logo = models.ImageField(upload_to='users/companies_logos/', default='img/default_company_logo.png')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Company'
+        verbose_name_plural = 'Companies'
+
+
 class Job(models.Model):
     name = models.CharField(max_length=30)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
     responsibility = models.TextField()
     qualifications = models.TextField()
     benefits = models.TextField()
-    company_name = models.CharField(max_length=30)
-    company_logo = models.ImageField(upload_to='users/companies_logos/', default='img/default_company_logo.png')
     published_date = models.DateField(auto_now_add=True)
     positions_number = models.PositiveSmallIntegerField(default=1)
-    salary_from = models.PositiveIntegerField(blank=True, null=True)
-    # Do validator for salary_from < salary_to
-    salary_to = models.PositiveIntegerField(blank=True, null=True)
+    salary_from = models.PositiveSmallIntegerField(blank=True, null=True)
+    salary_to = models.PositiveSmallIntegerField(blank=True, null=True,
+                                                 help_text='leave from and to fields empty to contractual salary')
     location = models.CharField(max_length=30)
     job_nature = models.CharField(max_length=15)
     created_by = models.ForeignKey(BoardUser, on_delete=models.CASCADE, related_name='created_by')

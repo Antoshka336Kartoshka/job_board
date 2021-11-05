@@ -88,6 +88,16 @@
                         {% endif %}
                     </div>
                     {% endif %}
+                    {% if is_employer %}
+                    <div class="mb-3">
+                        <label for="company">Company name</label>
+                        <input type="text" name="company" placeholder="Company" id="company"
+                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Company'"
+                               required
+                               class="single-input"
+                               value="{% if form.company.value %}{{form.company.value}}{% endif %}">
+                    </div>
+                    {% endif %}
                     <div class="mb-3">
                         <label for="photo" class="form-label">Profile photo</label>
                         <input class="form-control" type="file" id="photo" name="user_photo">
