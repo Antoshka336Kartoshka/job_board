@@ -7,14 +7,15 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Count
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 
-from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm
+from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
 from main.decorators import unauthenticated_user, employer_permission, jobseeker_permission
 from main.utils import account_activation_token, is_employer
-from main.models import BoardUser, Job
+from main.models import BoardUser, Job, Category
 
 from logging import getLogger  # logging for Debug
 
@@ -22,7 +23,14 @@ log = getLogger(__name__)
 
 
 def index(request):
-    return render(request, 'main/index.html')
+    categories = Category.objects.annotate(jobs_count=Count('job')).order_by('-jobs_count')[:8]  # Sort by jobs
+    jobs_list = Job.objects.order_by('-published_date')[:5]
+    featured_candidates = Group.objects.get(name='jobseeker').user_set.filter(is_active=True)[:8]
+    top_companies = Group.objects.get(name='employer').user_set.annotate(jobs_count=Count('created_by')).order_by(
+        '-jobs_count')[:4]
+    context = {'jobs_count': Job.objects.count(), 'categories': categories, 'jobs_list': jobs_list,
+               'featured_candidates': featured_candidates, 'top_companies': top_companies}
+    return render(request, 'main/index.html', context)
 
 
 def jobs(request):
@@ -33,7 +41,7 @@ def jobs(request):
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {'jobs_list': page.object_list, 'page': page}
+    context = {'jobs_list': page.object_list, 'page': page, 'jobs_count': Job.objects.count()}
     return render(request, 'main/jobs.html', context)
 
 
@@ -53,6 +61,9 @@ def job_details(request, pk: int):
 @login_required(login_url='login')
 @employer_permission
 def job_post(request):
+    if not request.user.company:
+        messages.warning(request, 'To post a job you should register your company')
+        return redirect('account_settings')
     form = JobForm
     if request.method == 'POST':
         form = JobForm(request.POST, request.FILES)
@@ -70,7 +81,6 @@ def job_post(request):
 @jobseeker_permission
 def job_apply(request, pk: int):
     user = request.user
-    log.debug(user)
     if user.portfolio_link and user.cv_file:
         job = Job.objects.get(pk=pk)
         if user not in job.responding_users.all():
@@ -95,7 +105,7 @@ def job_delete(request, pk: int):
 
 
 def candidates(request):
-    candidates_list = Group.objects.get(name='jobseeker').user_set.all()
+    candidates_list = Group.objects.get(name='jobseeker').user_set.filter(is_active=True)
     paginator = Paginator(candidates_list, 8, 4)
     if 'page' in request.GET:
         page_num = request.GET['page']
@@ -192,7 +202,7 @@ def activate_user(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        messages.success(request, 'Thank you for your email confirmation. Now you can log in to your account.')
         return redirect('index')
     else:
         return HttpResponse('Activation link is invalid!')
@@ -209,6 +219,20 @@ def account_settings(request):  # Print all columns from model
             messages.success(request, 'Your account details were changed')
     context = {'user': user, 'is_employer': is_employer(user), 'form': form}
     return render(request, 'main/account_settings.html', context)
+
+
+@login_required(login_url='login')
+@employer_permission
+def create_company(request):
+    if request.method == 'POST':
+        form = CompanyForm(request.POST, request.FILES)
+        if form.is_valid():
+            company = form.save()
+            user = BoardUser.objects.get(pk=request.user.pk)
+            user.company = company
+            user.save()
+            messages.success(request, 'The company was successfully registered')
+            return redirect('account_settings')
 
 
 @login_required(login_url='login')

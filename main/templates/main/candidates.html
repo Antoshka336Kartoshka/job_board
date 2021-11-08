@@ -21,7 +21,6 @@
     <div class="container">
         <div class="row">
             {% for candidate in candidates_list %}
-            {% if candidate.is_active %}
             <div class="col-md-6 col-lg-3">
                 <div class="single_candidates text-center">
                     <div class="thumb">
@@ -31,7 +30,6 @@
                     <p>{{ candidate.speciality }}</p>
                 </div>
             </div>
-            {% endif %}
             {% endfor %}
         </div>
 

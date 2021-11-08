@@ -16,7 +16,7 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     cv_file = models.FileField(upload_to='users/cv/', null=True, blank=True)
     user_photo = models.ImageField(upload_to='users/photo/', default='img/default_user_photo.png')
     speciality = models.CharField(max_length=30, null=True, blank=True)
-    company = models.OneToOneField('Company', on_delete=models.CASCADE, null=True)
+    company = models.OneToOneField('Company', on_delete=models.SET_NULL, null=True)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']

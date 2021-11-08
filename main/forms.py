@@ -1,7 +1,7 @@
 from django.forms import ModelForm, ValidationError, Textarea
 from django.forms.fields import CharField, EmailField
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from main.models import BoardUser, Job
+from main.models import BoardUser, Job, Company
 from main.utils import capfirst
 
 
@@ -67,6 +67,17 @@ class AccountSettingsForm(ModelForm):
     class Meta:
         model = BoardUser
         fields = ['first_name', 'last_name', 'speciality', 'portfolio_link', 'cv_file', 'user_photo', 'company']
+
+
+class CompanyForm(ModelForm):
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        return capfirst(name)
+
+    class Meta:
+        model = Company
+        fields = ['name', 'company_logo']
 
 
 class JobForm(ModelForm):

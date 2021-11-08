@@ -24,7 +24,8 @@
                     <div class="single_jobs white-bg d-flex justify-content-between">
                         <div class="jobs_left d-flex align-items-center">
                             <div class="thumb">
-                                <img src="{{ job.company_logo.url }}" alt="" style="width: 100%; height: 100%">
+                                <img src="{{ job.created_by.company.company_logo.url }}" alt=""
+                                     style="width: 100%; height: 100%">
                             </div>
                             <div class="jobs_conetent">
                                 <h4>{{ job.name }}</h4>
@@ -91,9 +92,11 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="genric-btn default radius" data-dismiss="modal">
-                                            Закрыть
+                                            Close
                                         </button>
-                                        <a href="{% url 'job_delete' job.pk %}"><button type="button" class="btn genric-btn danger radius">Удалить</button></a>
+                                        <a href="{% url 'job_delete' job.pk %}">
+                                            <button type="button" class="btn genric-btn danger radius">Удалить</button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -118,14 +121,14 @@
                             <li>Published on: <span>{{ job.published_date }}</span></li>
                             <li>Vacancy: <span>{{ job.positions_number }} Position</span></li>
                             <li>Salary: <span>
-                                {% if not job.salary_from and not job_salary_to %}
-                                Contractual
-                                {% elif job.salary_from and not job_salary_to %}
-                                from {{ job.salary_from }}
-                                {% elif not job.salary_from and job_salary_to %}
-                                to {{ job.job_salary_to }}
+                                {% if job.salary_from and job.salary_to %}
+                                {{ job.salary_from }}k - {{ job.salary_to }}k/month
+                                {% elif job.salary_from and not job.salary_to %}
+                                from {{ job.salary_from }}k/month
+                                {% elif job.salary_to %}
+                                to {{ job.salary_to }}k/month
                                 {% else %}
-                                {{ job.salary_from }}k - {{ job.salary_to }}k/y
+                                Contractual
                                 {% endif %}
                             </span></li>
                             <li>Location: <span>{{ job.location }}</span></li>

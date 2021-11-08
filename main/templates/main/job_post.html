@@ -30,6 +30,17 @@
                 {% endfor %}
                 {% endif %}
             </div>
+            <div class="row col-md-12">
+                <p class="col-md-2">Category: </p>
+                <div class="default-select col-md-1" id="category-select">
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                    {% for error in form.category.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div> <br>
             <div class="col-md-12">
                 <div class="input_field">
                     <textarea name="{{ form.description.name }}" cols="30" rows="10" placeholder="Description"
@@ -74,38 +85,6 @@
                 <p>{{ error }}</p>
                 {% endfor %}
                 {% endif %}
-            </div>
-            <div class="col-md-12">
-                <div class="input_field">
-                    <input type="text" placeholder="Company name" name="{{ form.company_name.name }}" required>
-                </div>
-                {% if form.company_name.errors %}
-                {% for error in form.company_name.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-                {% endif %}
-            </div>
-            <div class="col-md-12">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <button type="button" id="inputGroupFileAddon03"><i class="fa fa-cloud-upload"
-                                                                            aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="inputGroupFile01"
-                               aria-describedby="inputGroupFileAddon01" name="{{ form.company_logo.name }}">
-                        <label class="custom-file-label" for="inputGroupFile01">Company logo</label>
-                        {% if form.cv_file.value %}
-                        <p>Your current CV: <a href="{{ form.company_logo.value.url }}">{{ form.cv_file.value }}</a></p>
-                        {% endif %}
-                    </div>
-                    {% if form.company_logo.errors %}
-                    {% for error in form.company_logo.errors %}
-                    <p>{{ error }}</p>
-                    {% endfor %}
-                    {% endif %}
-                </div>
             </div>
             <div class="row col-md-12">
                 <p class="col-md-2">Positions: </p>

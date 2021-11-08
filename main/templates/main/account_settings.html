@@ -29,10 +29,18 @@
             <div class="justify-content-center col-lg-6 offset-lg-3 text-center ">
                 <form class="needs-validation" novalidate method="post" enctype="multipart/form-data">
                     {% csrf_token %}
+                    {% if is_employer %}
+                    <div class="thumb justify-content-center col-lg-6 offset-lg-3">
+                        <img src="{{ request.user.company.company_logo.url }}" alt="" class="rounded-circle"
+                             style="max-width:70%; height:auto;">
+                    </div>
+                    <p>Your current company: {{ request.user.company.name }}</p>
+                    {% else %}
                     <div class="thumb justify-content-center col-lg-6 offset-lg-3">
                         <img src="{{ form.user_photo.value.url }}" alt="" class="rounded-circle"
                              style="max-width:70%; height:auto;">
                     </div>
+                    {% endif %}
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="first_name">First name</label>
@@ -65,8 +73,6 @@
                             Please enter name your speciality.
                         </div>
                     </div>
-                    {% endif %}
-                    {% if not is_employer %}
                     <div class="mb-3">
                         <label for="portfolio_link">Website/Portfolio link</label>
                         <input type="text" name="portfolio_link" placeholder="https://example.com/" id="portfolio_link"
@@ -78,8 +84,6 @@
                             Please enter name your Website/Portfolio link.
                         </div>
                     </div>
-                    {% endif %}
-                    {% if not is_employer %}
                     <div class="mb-3">
                         <label for="formFile" class="form-label">CV file</label>
                         <input class="form-control" type="file" id="formFile" name="cv_file">
@@ -87,26 +91,69 @@
                         <p>Your current CV: <a href="{{ form.cv_file.value.url }}">{{ form.cv_file.value }}</a></p>
                         {% endif %}
                     </div>
-                    {% endif %}
-                    {% if is_employer %}
-                    <div class="mb-3">
-                        <label for="company">Company name</label>
-                        <input type="text" name="company" placeholder="Company" id="company"
-                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Company'"
-                               required
-                               class="single-input"
-                               value="{% if form.company.value %}{{form.company.value}}{% endif %}">
-                    </div>
-                    {% endif %}
                     <div class="mb-3">
                         <label for="photo" class="form-label">Profile photo</label>
                         <input class="form-control" type="file" id="photo" name="user_photo">
                     </div>
-
+                    {% endif %}
+                    {% if not request.user.company %}
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn genric-btn radius w-100 mb-3" data-toggle="modal"
+                            data-target="#staticBackdrop">
+                        Register your company
+                    </button>
+                    {% endif %}
                     <div class="mb-3">
                         <input type="submit" class="genric-btn boxed-btn3" value="Change details">
                     </div>
                 </form>
+                {% if not request.user.company %}
+                <!-- Modal body -->
+                <div class="modal" id="staticBackdrop" data-backdrop="false" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog ">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Register your company</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'create_company' %}" method="post"
+                                      enctype="multipart/form-data" id="company_form">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="company">Company name</label>
+                                        <input type="text" name="name" placeholder="Company" id="company"
+                                               onfocus="this.placeholder = ''" onblur="this.placeholder = 'Company'"
+                                               required
+                                               class="single-input">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="company_logo" class="form-label">Company logo</label>
+                                        <input class="form-control" type="file" id="company_logo"
+                                               name="company_logo">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="submit" class="genric-btn boxed-btn3" value="Register">
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="genric-btn default radius" data-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="submit" class="genric-btn boxed-btn3" form="company_form">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                {% endif %}
             </div>
         </div>
     </div>

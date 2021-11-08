@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-xl-12">
                 <div class="bradcam_text">
-                    <h3>4536+ Jobs Available</h3>
+                    <h3>{{ jobs_count }}+ Jobs Available</h3>
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                             <div class="single_jobs white-bg d-flex justify-content-between">
                                 <div class="jobs_left d-flex align-items-center">
                                     <div class="thumb">
-                                        <img src="{{ job.company_logo.url }}" alt="" style="width: 100%; height: 100%;">
+                                        <img src="{{ job.created_by.company.company_logo.url }}" alt="" style="width: 100%; height: 100%;">
                                     </div>
                                     <div class="jobs_conetent">
                                         <a href="{% url 'job_details' job.pk %}"><h4>{{ job.name }}</h4></a>
