@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_countries',
+    'django_social_share',
     'main.apps.MainConfig',
 ]
 
@@ -152,13 +153,13 @@ LOGGING = {
         'verbose': {
             'format': '{levelname} {asctime} {module} - {message}',
             'style': '{',
-            },
         },
+    },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename':  os.path.join(os.path.dirname(BASE_DIR), 'job_board\debug.log'),
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'job_board\debug.log'),
             'formatter': 'verbose'
         },
     },

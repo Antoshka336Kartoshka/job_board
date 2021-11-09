@@ -1,5 +1,6 @@
 {% extends 'main/base_template.html' %}
 {% load static %}
+{% load countries %}
 {% block content %}
 
 <!-- slider_area_start -->
@@ -38,50 +39,50 @@
 <!-- category_area -->
 <div class="catagory_area">
     <div class="container">
-        <div class="row cat_search">
-            <div class="col-lg-3 col-md-4">
-                <div class="single_input">
-                    <input type="text" placeholder="Search keyword">
+        <form action="{% url 'jobs' %}" method="get">
+            <div class="row cat_search">
+                <div class="col-lg-3 col-md-4">
+                    <div class="single_input">
+                        <input type="text" placeholder="Search keyword" name="q">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <div class="single_input">
+                        <input type="text" placeholder="Location" name="location"
+                               list="countries">
+                        {% get_countries as countries %}
+                        <datalist id="countries">
+                            {% for country in countries %}
+                            <option value="{{ country.name }}">
+                                {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <div class="single_input">
+                        <select class="wide" name="category">
+                            <option data-display="Category" value="">Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-12">
+                    <div class="job_btn">
+                        <button class="boxed-btn3 w-100" type="submit">Find job</button>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-4">
-                <div class="single_input">
-                    <select class="wide">
-                        <option data-display="Location">Location</option>
-                        <option value="1">Dhaka</option>
-                        <option value="2">Rangpur</option>
-                        <option value="4">Sylet</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4">
-                <div class="single_input">
-                    <select class="wide">
-                        <option data-display="Category">Category</option>
-                        <option value="1">Category 1</option>
-                        <option value="2">Category 2</option>
-                        <option value="4">Category 3</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-12">
-                <div class="job_btn">
-                    <a href="#" class="boxed-btn3">Find Job</a>
-                </div>
-            </div>
-        </div>
+        </form>
         <div class="row">
             <div class="col-lg-12">
                 <div class="popular_search d-flex align-items-center">
                     <span>Popular Search:</span>
                     <ul>
-                        <li><a href="#">Design & Creative</a></li>
-                        <li><a href="#">Marketing</a></li>
-                        <li><a href="#">Administration</a></li>
-                        <li><a href="#">Teaching & Education</a></li>
-                        <li><a href="#">Engineering</a></li>
-                        <li><a href="#">Software & Web</a></li>
-                        <li><a href="#">Telemarketing</a></li>
+                        {% for category in categories|slice:":6" %}
+                        <li><a href="{% url 'jobs' %}?category={{ category.name }}">{{ category.name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -105,7 +106,7 @@
             {% for category in categories %}
             <div class="col-lg-4 col-xl-3 col-md-6">
                 <div class="single_catagory">
-                    <a href="{% url 'jobs' %}"><h4>{{ category.name }}</h4></a>
+                    <a href="{% url 'jobs' %}?category={{ category.name }}"><h4>{{ category.name }}</h4></a>
                     <p><span>{{ category.jobs_count }}</span> Available position</p>
                 </div>
             </div>
@@ -189,7 +190,8 @@
                             <img src="{{ candidate.user_photo.url }}" alt="">
                         </div>
                         <a href="{% url 'candidate_details' candidate.pk %}"><h4>{{ candidate.get_full_name }}</h4></a>
-                        <p>{{ candidate.speciality }}</p>
+                        <p>{% if candidate.speciality %}{{ candidate.speciality }}{% else %}Specialty is not specified{%
+                            endif %}</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -220,7 +222,7 @@
                     <div class="thumb">
                         <img src="{{ company.company.company_logo.url }}" alt="" style="width: 100%; height: 100%">
                     </div>
-                    <a href="{% url 'jobs' %}"><h3>{{ company.company.name }}</h3></a>
+                    <a href="{% url 'jobs' %}?company={{company.company.name}}"><h3>{{ company.company.name }}</h3></a>
                     <p><span>{{ company.created_by.count }}</span> Available position</p>
                 </div>
             </div>

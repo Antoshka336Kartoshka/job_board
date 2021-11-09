@@ -1,5 +1,6 @@
 {% extends 'main/base_template.html' %}
 {% load static %}
+{% load social_share %}
 {% block content %}
 
 <!-- bradcam_area  -->
@@ -114,10 +115,11 @@
             <div class="col-lg-4">
                 <div class="job_sumary">
                     <div class="summery_header">
-                        <h3>{{ job.company_name }}</h3>
+                        <h3>{{ job.created_by.company.name }}</h3>
                     </div>
                     <div class="job_content">
                         <ul>
+                            <li>Category: <span> {{ job.category.name }}</span></li>
                             <li>Published on: <span>{{ job.published_date }}</span></li>
                             <li>Vacancy: <span>{{ job.positions_number }} Position</span></li>
                             <li>Salary: <span>
@@ -139,10 +141,12 @@
                 <div class="share_wrap d-flex">
                     <span>Share at:</span>
                     <ul>
-                        <li><a href="#"> <i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"> <i class="fa fa-google-plus"></i></a></li>
-                        <li><a href="#"> <i class="fa fa-twitter"></i></a></li>
-                        <li><a href="#"> <i class="fa fa-envelope"></i></a></li>
+                        <li>{% post_to_facebook object_or_url ' ' 'fa fa-facebook'%}</li>
+                        <li>{% post_to_gplus object_or_url ' ' 'fa fa-google-plus'%}</li>
+                        <li>{% post_to_twitter '' object_or_url ' ' 'fa fa-twitter'%}</li>
+                        <li>{% send_email job.name "Description: {{job.description}}" object_or_url ' ' 'fa fa-envelope'
+                            %}
+                        </li>
                     </ul>
                 </div>
             </div>

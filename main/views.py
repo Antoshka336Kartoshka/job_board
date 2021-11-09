@@ -7,7 +7,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
@@ -34,14 +34,28 @@ def index(request):
 
 
 def jobs(request):
-    jobs_list = Job.objects.all().order_by('-published_date')
+    if request.GET:  # if get parameters -> search
+        q = request.GET.get('q', default='')
+        location = request.GET.get('location', default='')
+        category = request.GET.get('category', default='')
+        job_nature = request.GET.get('job_nature', default='')
+        company = request.GET.get('company', default='')
+        jobs_list = Job.objects.filter(
+            Q(name__icontains=q), Q(location__icontains=location), Q(category__name__icontains=category),
+            Q(job_nature__icontains=job_nature), Q(created_by__company__name__icontains=company)).distinct().order_by(
+            '-published_date')
+    else:  # return all entries
+        jobs_list = Job.objects.order_by('-published_date')  # <- return search result
+    companies = Group.objects.get(name='employer').user_set.annotate(
+        jobs_count=Count('created_by')).order_by('-jobs_count')
+    categories = Category.objects.all()
     paginator = Paginator(jobs_list, 5, 1)
     if 'page' in request.GET:
         page_num = request.GET['page']
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {'jobs_list': page.object_list, 'page': page, 'jobs_count': Job.objects.count()}
+    context = {'jobs_list': page.object_list, 'page': page, 'categories': categories, 'companies': companies}
     return render(request, 'main/jobs.html', context)
 
 

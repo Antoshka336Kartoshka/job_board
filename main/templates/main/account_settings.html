@@ -96,7 +96,7 @@
                         <input class="form-control" type="file" id="photo" name="user_photo">
                     </div>
                     {% endif %}
-                    {% if not request.user.company %}
+                    {% if user.is_employer and not request.user.company %}
                     <!-- Button trigger modal -->
                     <button type="button" class="btn genric-btn radius w-100 mb-3" data-toggle="modal"
                             data-target="#staticBackdrop">
