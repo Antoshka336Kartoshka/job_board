@@ -1,6 +1,7 @@
 from django.forms import ModelForm, ValidationError, Textarea
 from django.forms.fields import CharField, EmailField
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from captcha.fields import  CaptchaField
 from main.models import BoardUser, Job, Company
 from main.utils import capfirst
 
@@ -10,6 +11,7 @@ class RegistrationForm(UserCreationForm):
     first_name = CharField(min_length=2, max_length=20)
     last_name = CharField(min_length=2, max_length=20)
     email = EmailField()
+    captcha = CaptchaField()
 
     def clean_first_name(self):
         first_name = self.cleaned_data['first_name']

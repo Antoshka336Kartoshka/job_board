@@ -3,14 +3,14 @@ from django.contrib import messages
 from main.utils import is_employer, is_jobseeker
 
 
-def unauthenticated_user(view):
+def restrict_auth_users(view):
     """
-    Restrict unauthenticated users from view
+    Restrict authenticated users from view
     """
 
     def wrapper(request, *args, **kwargs):
         if request.user.is_authenticated:
-            messages.info(request, 'You are already logged in')
+            messages.info(request, 'You have no access to this page')
             return redirect('index')
         return view(request, *args, **kwargs)
 

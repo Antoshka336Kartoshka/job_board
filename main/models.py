@@ -15,7 +15,7 @@ class BoardUser(AbstractUser):  # Модель посльзователя
     portfolio_link = models.URLField(null=True, blank=True)
     cv_file = models.FileField(upload_to='users/cv/', null=True, blank=True)
     user_photo = models.ImageField(upload_to='users/photo/', default='img/default_user_photo.png')
-    speciality = models.CharField(max_length=30, null=True, blank=True)
+    speciality = models.CharField(max_length=30, default='Specialty is not specified')
     company = models.OneToOneField('Company', on_delete=models.SET_NULL, null=True)
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'

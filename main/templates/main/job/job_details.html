@@ -40,11 +40,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="jobs_right">
-                            <div class="apply_now">
-                                <a class="heart_mark" href="#"> <i class="ti-heart"></i> </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="descript_wrap white-bg">
@@ -144,8 +139,7 @@
                         <li>{% post_to_facebook object_or_url ' ' 'fa fa-facebook'%}</li>
                         <li>{% post_to_gplus object_or_url ' ' 'fa fa-google-plus'%}</li>
                         <li>{% post_to_twitter '' object_or_url ' ' 'fa fa-twitter'%}</li>
-                        <li>{% send_email job.name "Description: {{job.description}}" object_or_url ' ' 'fa fa-envelope'
-                            %}
+                        <li>{% send_email job.name "Description: {{job.description}}" object_or_url ' ' 'fa fa-envelope'%}
                         </li>
                     </ul>
                 </div>

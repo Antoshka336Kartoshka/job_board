@@ -1,9 +1,11 @@
 from django.http import HttpResponse, Http404
 from django.contrib import messages
 from django.contrib.auth import login, logout
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,7 +15,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 
 from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
-from main.decorators import unauthenticated_user, employer_permission, jobseeker_permission
+from main.decorators import restrict_auth_users, employer_permission, jobseeker_permission
 from main.utils import account_activation_token, is_employer
 from main.models import BoardUser, Job, Category
 
@@ -44,7 +46,7 @@ def jobs(request):
             Q(name__icontains=q), Q(location__icontains=location), Q(category__name__icontains=category),
             Q(job_nature__icontains=job_nature), Q(created_by__company__name__icontains=company)).distinct().order_by(
             '-published_date')
-    else:  # return all entries
+    else:  # return all entities
         jobs_list = Job.objects.order_by('-published_date')  # <- return search result
     companies = Group.objects.get(name='employer').user_set.annotate(
         jobs_count=Count('created_by')).order_by('-jobs_count')
@@ -56,7 +58,7 @@ def jobs(request):
         page_num = 1
     page = paginator.get_page(page_num)
     context = {'jobs_list': page.object_list, 'page': page, 'categories': categories, 'companies': companies}
-    return render(request, 'main/jobs.html', context)
+    return render(request, 'main/job/jobs.html', context)
 
 
 def job_details(request, pk: int):
@@ -69,7 +71,7 @@ def job_details(request, pk: int):
         elif request.user.applied_jobs.filter(pk=pk):
             applied = True
     context = {'job': job, 'applied': applied, 'is_employer': employer}
-    return render(request, 'main/job_details.html', context)
+    return render(request, 'main/job/job_details.html', context)
 
 
 @login_required(login_url='login')
@@ -88,7 +90,7 @@ def job_post(request):
             messages.success(request, 'Your job was added')
             return redirect('index')  # <- должен быть переход на страницу вакансии
     context = {'form': form}
-    return render(request, 'main/job_post.html', context)
+    return render(request, 'main/job/job_post.html', context)
 
 
 @login_required(login_url='login')
@@ -127,7 +129,7 @@ def candidates(request):
         page_num = 1
     page = paginator.get_page(page_num)
     context = {'candidates_list': page.object_list, 'page': page}
-    return render(request, 'main/candidates.html', context)
+    return render(request, 'main/candidate/candidates.html', context)
 
 
 def candidate_details(request, pk: int):
@@ -135,7 +137,7 @@ def candidate_details(request, pk: int):
     if is_employer(candidate):
         raise Http404('User does not exists')
     context = {'candidate': candidate}
-    return render(request, 'main/candidate_details.html', context)
+    return render(request, 'main/candidate/candidate_details.html', context)
 
 
 def blog(request):
@@ -150,7 +152,7 @@ def contact(request):
     return render(request, 'main/contact.html')
 
 
-@unauthenticated_user
+@restrict_auth_users
 def user_login(request):
     form = LoginForm(request)
     if request.method == 'POST':
@@ -164,7 +166,7 @@ def user_login(request):
             else:
                 return redirect('index')
     context = {'form': form}
-    return render(request, 'main/login.html', context)
+    return render(request, 'main/account/login.html', context)
 
 
 @login_required(login_url='login')
@@ -173,7 +175,7 @@ def user_logout(request):
     return redirect('index')
 
 
-@unauthenticated_user
+@restrict_auth_users
 def user_registration(request):
     form = RegistrationForm
     if request.method == 'POST':
@@ -204,9 +206,10 @@ def user_registration(request):
             messages.success(request, msg)
             return redirect('index')
     context = {'form': form}
-    return render(request, 'main/registration.html', context=context)
+    return render(request, 'main/account/registration.html', context=context)
 
 
+@restrict_auth_users
 def activate_user(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -222,6 +225,40 @@ def activate_user(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
+@restrict_auth_users
+def password_reset(request):
+    form = PasswordResetForm()
+    if request.method == "POST":
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save(subject_template_name='main/account/password_reset_subject.txt',
+                      email_template_name='main/account/password_reset_email.html',
+                      request=request)
+            messages.success(request, "We've emailed you instructions for setting your password")
+            return redirect('index')
+    return render(request, "main/account/password_reset.html", context={"form": form})
+
+
+@restrict_auth_users
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = BoardUser.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, BoardUser.DoesNotExist):
+        user = None
+    if user and default_token_generator.check_token(user, token):
+        form = SetPasswordForm
+        if request.method == 'POST':
+            form = SetPasswordForm(user, data=request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your password was successfully changed. Now you can Log in')
+                return redirect('login')
+        return render(request, 'main/account/password_reset_confirm.html', context={'form': form})
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+
 @login_required(login_url='login')
 def account_settings(request):  # Print all columns from model
     user = request.user
@@ -232,7 +269,7 @@ def account_settings(request):  # Print all columns from model
             form.save()
             messages.success(request, 'Your account details were changed')
     context = {'user': user, 'is_employer': is_employer(user), 'form': form}
-    return render(request, 'main/account_settings.html', context)
+    return render(request, 'main/account/account_settings.html', context)
 
 
 @login_required(login_url='login')
@@ -256,4 +293,4 @@ def applied_jobs(request):
     else:
         jobs_list = request.user.applied_jobs.all()
     context = {'jobs_list': jobs_list}
-    return render(request, 'main/jobs.html', context)
+    return render(request, 'main/job/jobs.html', context)

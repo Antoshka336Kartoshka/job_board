@@ -6,9 +6,14 @@
 <!-- bradcam_area  -->
 <div class="bradcam_area bradcam_bg_1">
     <div class="container">
-        <div class="row">
-            <div class="col-xl-12">
+        <div class="row align-items-center">
+            <div class="col-lg-7 col-md-6">
                 <div class="bradcam_text">
+                    {% for message in messages %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
                     <h3>Log in</h3>
                 </div>
             </div>
@@ -49,6 +54,7 @@
                     <input type="submit" class="genric-btn boxed-btn3" value="Log in">
                 </div>
                 <p class="mt-10">Don’t have an account? <a href="{% url 'registration' %}">Sign up</a></p>
+                <p class="mt-10">Forgot your password? <a href="{% url 'password_reset' %}">Reset password</a></p>
 
             </form>
 

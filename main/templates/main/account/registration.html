@@ -84,6 +84,14 @@
                     {% endfor %}
                     {% endif %}
                 </div>
+                <div class="mt-10">
+                    {{ form.captcha }}
+                    {% if form.captcha.errors %}
+                    {% for error in form.captcha.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
                 <div class="form-check mt-10">
                     <input type="checkbox" class="form-check-input" id="user_type" value="employer" name="employer">
                     <label class="form-check-label" for="user_type">I'm an employer</label>

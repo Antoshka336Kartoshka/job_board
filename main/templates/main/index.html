@@ -155,7 +155,6 @@
                         </div>
                         <div class="jobs_right">
                             <div class="apply_now">
-                                <a class="heart_mark" href="#"> <i class="ti-heart"></i> </a>
                                 <a href="{% url 'job_details' job.pk %}" class="boxed-btn3">Apply Now</a>
                             </div>
                             <div class="date">
@@ -190,8 +189,7 @@
                             <img src="{{ candidate.user_photo.url }}" alt="">
                         </div>
                         <a href="{% url 'candidate_details' candidate.pk %}"><h4>{{ candidate.get_full_name }}</h4></a>
-                        <p>{% if candidate.speciality %}{{ candidate.speciality }}{% else %}Specialty is not specified{%
-                            endif %}</p>
+                        <p>{{ candidate.speciality }}</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -253,83 +251,5 @@
     </div>
 </div>
 <!-- job_searcing_wrap end  -->
-
-<!-- testimonial_area  -->
-<div class="testimonial_area  ">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="section_title text-center mb-40">
-                    <h3>Testimonial</h3>
-                </div>
-            </div>
-            <div class="col-xl-12">
-                <div class="testmonial_active owl-carousel">
-                    <div class="single_carousel">
-                        <div class="row">
-                            <div class="col-lg-11">
-                                <div class="single_testmonial d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="{% static 'img/testmonial/author.png' %}" alt="">
-                                        <div class="quote_icon">
-                                            <i class="Flaticon flaticon-quote"></i>
-                                        </div>
-                                    </div>
-                                    <div class="info">
-                                        <p>"Working in conjunction with humanitarian aid agencies, we have supported
-                                            programmes to help alleviate human suffering through animal welfare when
-                                            people might depend on livestock as their only source of income or food.</p>
-                                        <span>- Micky Mouse</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single_carousel">
-                        <div class="row">
-                            <div class="col-lg-11">
-                                <div class="single_testmonial d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="{% static 'img/testmonial/author.png' %}" alt="">
-                                        <div class="quote_icon">
-                                            <i class=" Flaticon flaticon-quote"></i>
-                                        </div>
-                                    </div>
-                                    <div class="info">
-                                        <p>"Working in conjunction with humanitarian aid agencies, we have supported
-                                            programmes to help alleviate human suffering through animal welfare when
-                                            people might depend on livestock as their only source of income or food.</p>
-                                        <span>- Micky Mouse</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="single_carousel">
-                        <div class="row">
-                            <div class="col-lg-11">
-                                <div class="single_testmonial d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="{% static 'img/testmonial/author.png' %}" alt="">
-                                        <div class="quote_icon">
-                                            <i class="Flaticon flaticon-quote"></i>
-                                        </div>
-                                    </div>
-                                    <div class="info">
-                                        <p>"Working in conjunction with humanitarian aid agencies, we have supported
-                                            programmes to help alleviate human suffering through animal welfare when
-                                            people might depend on livestock as their only source of income or food.</p>
-                                        <span>- Micky Mouse</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /testimonial_area  -->
 
 {% endblock %}
