@@ -1,6 +1,6 @@
 from django.urls import path
 from main import views
-from django.contrib.auth.views import PasswordResetConfirmView
+
 
 urlpatterns = [
     path('', views.index, name='index'),

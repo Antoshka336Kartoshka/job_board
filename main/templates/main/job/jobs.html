@@ -6,8 +6,13 @@
 <!-- bradcam_area  -->
 <div class="bradcam_area bradcam_bg_1">
     <div class="container">
-        <div class="row">
-            <div class="col-xl-12">
+        <div class="row align-items-center">
+            <div class="col-lg-7 col-md-6">
+                {% for message in messages %}
+                <div class="alert alert-primary" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
                 <div class="bradcam_text">
                     <h3>{{ jobs_list.count }} Jobs Available</h3>
                 </div>
@@ -181,6 +186,7 @@
             $( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
                 " - $" + $( "#slider-range" ).slider( "values", 1 ) + "/ Year");
         } );
+
 </script>
 {% endblock %}
 

@@ -25,7 +25,7 @@ log = getLogger(__name__)
 
 
 def index(request):
-    categories = Category.objects.annotate(jobs_count=Count('job')).order_by('-jobs_count')[:8]  # Sort by jobs
+    categories = Category.objects.annotate(jobs_count=Count('job')).order_by('-jobs_count')[:8]
     jobs_list = Job.objects.order_by('-published_date')[:5]
     featured_candidates = Group.objects.get(name='jobseeker').user_set.filter(is_active=True)[:8]
     top_companies = Group.objects.get(name='employer').user_set.annotate(jobs_count=Count('created_by')).order_by(
@@ -47,7 +47,7 @@ def jobs(request):
             Q(job_nature__icontains=job_nature), Q(created_by__company__name__icontains=company)).distinct().order_by(
             '-published_date')
     else:  # return all entities
-        jobs_list = Job.objects.order_by('-published_date')  # <- return search result
+        jobs_list = Job.objects.order_by('-published_date')
     companies = Group.objects.get(name='employer').user_set.annotate(
         jobs_count=Count('created_by')).order_by('-jobs_count')
     categories = Category.objects.all()
@@ -88,7 +88,7 @@ def job_post(request):
             job.created_by = request.user
             job.save()
             messages.success(request, 'Your job was added')
-            return redirect('index')  # <- должен быть переход на страницу вакансии
+            return redirect('job_details', pk=job.pk)
     context = {'form': form}
     return render(request, 'main/job/job_post.html', context)
 
@@ -105,7 +105,7 @@ def job_apply(request, pk: int):
         else:
             msg = 'You are already applied for this job'
         messages.info(request, msg)
-        return redirect('index')  # <- Rebuild to redirect on user applied jobs pageuse
+        return redirect('applied_jobs')
     else:
         messages.error(request, 'You should add CV and Portfolio before applying for a job')
         return redirect('account_settings')
@@ -260,7 +260,7 @@ def password_reset_confirm(request, uidb64, token):
 
 
 @login_required(login_url='login')
-def account_settings(request):  # Print all columns from model
+def account_settings(request):
     user = request.user
     form = AccountSettingsForm(instance=request.user)
     if request.method == 'POST':

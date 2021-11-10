@@ -50,6 +50,8 @@
                 <div class="mt-10">
                     {{ form.non_field_errors }}
                 </div>
+                Login with <a href="{% url 'social:begin' 'google-oauth2' %}" class="fa fa-google-plus"></a>
+
                 <div class="button-group-area mt-40">
                     <input type="submit" class="genric-btn boxed-btn3" value="Log in">
                 </div>
