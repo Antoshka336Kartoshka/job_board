@@ -97,18 +97,52 @@
                     </div>
                     {% endif %}
                     {% if user.is_employer and not request.user.company %}
-                    <!-- Button trigger modal -->
+                    <!-- Button trigger modal create company -->
                     <button type="button" class="btn genric-btn radius w-100 mb-3" data-toggle="modal"
                             data-target="#staticBackdrop">
                         Register your company
                     </button>
                     {% endif %}
+                    <!-- Button trigger modal delete account -->
+                    <p>You want to delete your <a class="mb-3" data-toggle="modal" data-target="#staticBackdrop1"
+                                                  style="cursor: pointer"><u>account</u></a>?</p>
                     <div class="mb-3">
                         <input type="submit" class="genric-btn boxed-btn3" value="Change details">
                     </div>
                 </form>
-                {% if not request.user.company %}
-                <!-- Modal body -->
+                <!-- Modal delete account -->
+                <div class="modal" id="staticBackdrop1" data-backdrop="false" data-keyboard="false"
+                     tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered ">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel1">Delete account</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" id="delete_account" action="{% url 'account_delete' request.user.pk %}">
+                                    {% csrf_token %}
+                                    You are going to delete your account. Are you sure?
+                                    <div class="form-check mt-10">
+                                        <input type="checkbox" class="form-check-input" id="confirmation"
+                                               name="confirmation" required>
+                                        <label class="form-check-label" for="confirmation">Yes, i'm sure</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="genric-btn default radius" data-dismiss="modal">
+                                    Close
+                                </button>
+                                    <button type="submit" class="btn genric-btn danger radius" form="delete_account">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if user.is_employer and not request.user.company %}
+                <!-- Modal create company -->
                 <div class="modal" id="staticBackdrop" data-backdrop="false" data-keyboard="false"
                      tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog ">

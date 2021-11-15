@@ -19,6 +19,7 @@ urlpatterns = [
     path('registration/', views.user_registration, name='registration'),
     path('activate/<uidb64>/<token>/', views.activate_user, name='activate'),
     path('account/settings/', views.account_settings, name='account_settings'),
+    path('account/settings/delete/<int:pk>/', views.account_delete, name='account_delete'),
     path('account/password/reset/', views.password_reset, name='password_reset'),
     path('account/password/reset/confirm/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
     path('account/create_company/', views.create_company, name='create_company'),

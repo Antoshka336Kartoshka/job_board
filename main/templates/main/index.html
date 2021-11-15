@@ -215,6 +215,7 @@
         </div>
         <div class="row">
             {% for company in top_companies %}
+            {% if company.company.name %}
             <div class="col-lg-4 col-xl-3 col-md-6">
                 <div class="single_company">
                     <div class="thumb">
@@ -224,6 +225,7 @@
                     <p><span>{{ company.created_by.count }}</span> Available position</p>
                 </div>
             </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>

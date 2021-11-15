@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseNotFound
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.tokens import default_token_generator
@@ -8,6 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
+from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
 from django.utils.encoding import force_bytes, force_text
@@ -114,10 +115,13 @@ def job_apply(request, pk: int):
 @login_required(login_url='login')
 @employer_permission
 def job_delete(request, pk: int):
-    job = get_object_or_404(Job, pk=pk)
-    job.delete()
-    messages.success(request, 'Job was successfully deleted')
-    return redirect('index')
+    if request.method == 'POST':
+        if request.POST.get('confirmation'):
+            job = get_object_or_404(Job, pk=pk)
+            job.delete()
+            messages.success(request, 'Job was successfully deleted')
+            return redirect('index')
+    return HttpResponseNotFound()
 
 
 def candidates(request):
@@ -149,6 +153,12 @@ def single_blog(request):
 
 
 def contact(request):
+    if request.method == 'POST':
+        body = f"Message from {request.POST['name']}\n{request.POST['message']}"
+        email = EmailMessage(subject=request.POST['subject'], body=body,
+                             from_email=request.POST['email'], to=(settings.EMAIL_HOST_USER,))
+        email.send()
+        messages.success(request, 'Your email was sent, we will contact you via Email soon')
     return render(request, 'main/contact.html')
 
 
@@ -191,7 +201,7 @@ def user_registration(request):
             user.groups.add(user_group)
             current_site = get_current_site(request)
             mail_subject = 'Activation link from Job Board'
-            message = render_to_string('main/email_confirmation.html', {
+            message = render_to_string('main/account/email_confirmation.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -210,7 +220,7 @@ def user_registration(request):
 
 
 @restrict_auth_users
-def activate_user(request, uidb64, token):
+def activate_user(request, uidb64: str, token: str):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = BoardUser.objects.get(pk=uid)
@@ -240,7 +250,7 @@ def password_reset(request):
 
 
 @restrict_auth_users
-def password_reset_confirm(request, uidb64, token):
+def password_reset_confirm(request, uidb64: str, token: str):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = BoardUser.objects.get(pk=uid)
@@ -270,6 +280,17 @@ def account_settings(request):
             messages.success(request, 'Your account details were changed')
     context = {'user': user, 'is_employer': is_employer(user), 'form': form}
     return render(request, 'main/account/account_settings.html', context)
+
+
+@login_required(login_url='login')
+def account_delete(request, pk: int):
+    if request.method == 'POST':
+        if request.POST.get('confirmation'):
+            user = get_object_or_404(BoardUser, pk=pk)
+            user.delete()
+            messages.success(request, 'Your account was deleted!')
+            return redirect('index')
+    return HttpResponseNotFound()
 
 
 @login_required(login_url='login')

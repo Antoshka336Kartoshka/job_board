@@ -1,8 +1,8 @@
-from django.forms import ModelForm, ValidationError, Textarea
+from django.forms import ModelForm, ValidationError, Textarea, ModelChoiceField
 from django.forms.fields import CharField, EmailField
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from captcha.fields import  CaptchaField
-from main.models import BoardUser, Job, Company
+from main.models import BoardUser, Job, Company, Category
 from main.utils import capfirst
 
 
@@ -84,6 +84,7 @@ class CompanyForm(ModelForm):
 
 class JobForm(ModelForm):
     name = CharField(min_length=3, max_length=30)
+    category = ModelChoiceField(queryset=Category.objects.all())
     description = CharField(min_length=10, widget=Textarea)
     responsibility = CharField(min_length=10, widget=Textarea)
     qualifications = CharField(min_length=10, widget=Textarea)
