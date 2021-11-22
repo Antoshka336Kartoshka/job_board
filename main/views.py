@@ -1,4 +1,4 @@
-from django.http import HttpResponse, Http404, HttpResponseNotFound
+from django.http import HttpResponse, Http404, HttpResponseNotFound, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.tokens import default_token_generator
@@ -14,11 +14,13 @@ from django.db.models import Count, Q
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
+from rest_framework.decorators import api_view
 
 from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
 from main.decorators import restrict_auth_users, employer_permission, jobseeker_permission
 from main.utils import account_activation_token, is_employer
 from main.models import BoardUser, Job, Category, Company
+from main.serializers import JobSerializer
 
 from logging import getLogger  # logging for Debug
 
@@ -318,3 +320,19 @@ def applied_jobs(request):
         jobs_list = request.user.applied_jobs.all()
     context = {'jobs_list': jobs_list}
     return render(request, 'main/job/jobs.html', context)
+
+
+# REST
+
+@api_view(['GET'])
+def jobs_api(request):
+    jobs = Job.objects.all()
+    serializer = JobSerializer(jobs, many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def job_details_api(request, pk: int):
+    job = get_object_or_404(Job, pk=pk)
+    serializer = JobSerializer(job)
+    return JsonResponse(serializer.data, safe=False)

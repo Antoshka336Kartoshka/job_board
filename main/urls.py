@@ -24,5 +24,6 @@ urlpatterns = [
     path('account/password/reset/confirm/<uidb64>/<token>/', views.password_reset_confirm, name='password_reset_confirm'),
     path('account/create_company/', views.create_company, name='create_company'),
     path('account/jobs/', views.applied_jobs, name='applied_jobs'),
-
+    path('api/jobs/', views.jobs_api, name='jobs_api'),
+    path('api/jobs/<int:pk>/', views.job_details_api, name='job_details_api'),
 ]
