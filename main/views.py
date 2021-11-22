@@ -18,7 +18,7 @@ from django.template.loader import render_to_string
 from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
 from main.decorators import restrict_auth_users, employer_permission, jobseeker_permission
 from main.utils import account_activation_token, is_employer
-from main.models import BoardUser, Job, Category
+from main.models import BoardUser, Job, Category, Company
 
 from logging import getLogger  # logging for Debug
 
@@ -287,6 +287,9 @@ def account_delete(request, pk: int):
     if request.method == 'POST':
         if request.POST.get('confirmation'):
             user = get_object_or_404(BoardUser, pk=pk)
+            if user.company:
+                company = get_object_or_404(Company, pk=user.company.pk)
+                company.delete()
             user.delete()
             messages.success(request, 'Your account was deleted!')
             return redirect('index')

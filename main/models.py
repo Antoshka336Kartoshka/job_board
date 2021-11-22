@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 
 
@@ -72,6 +73,9 @@ class Job(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('job_details', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = 'Job'

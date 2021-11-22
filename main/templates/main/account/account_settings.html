@@ -34,7 +34,9 @@
                         <img src="{{ request.user.company.company_logo.url }}" alt="" class="rounded-circle"
                              style="max-width:70%; height:auto;">
                     </div>
+                    {% if user.company %}
                     <p>Your current company: {{ request.user.company.name }}</p>
+                    {% endif %}
                     {% else %}
                     <div class="thumb justify-content-center col-lg-6 offset-lg-3">
                         <img src="{{ form.user_photo.value.url }}" alt="" class="rounded-circle"
@@ -96,7 +98,7 @@
                         <input class="form-control" type="file" id="photo" name="user_photo">
                     </div>
                     {% endif %}
-                    {% if user.is_employer and not request.user.company %}
+                    {% if is_employer and not user.company %}
                     <!-- Button trigger modal create company -->
                     <button type="button" class="btn genric-btn radius w-100 mb-3" data-toggle="modal"
                             data-target="#staticBackdrop">
@@ -141,7 +143,7 @@
                         </div>
                     </div>
                 </div>
-                {% if user.is_employer and not request.user.company %}
+                {% if is_employer and not user.company %}
                 <!-- Modal create company -->
                 <div class="modal" id="staticBackdrop" data-backdrop="false" data-keyboard="false"
                      tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -174,14 +176,6 @@
                                     </div>
                                 </form>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="genric-btn default radius" data-dismiss="modal">
-                                    Close
-                                </button>
-                                <button type="submit" class="genric-btn boxed-btn3" form="company_form">
-                                    Submit
-                                </button>
                             </div>
                         </div>
                     </div>

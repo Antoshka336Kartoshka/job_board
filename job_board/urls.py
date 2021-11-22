@@ -1,4 +1,3 @@
-from main import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include
@@ -8,7 +7,6 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
-    path('', include('social_django.urls', namespace='social')),
     path('', include('main.urls')),
 ]
 
