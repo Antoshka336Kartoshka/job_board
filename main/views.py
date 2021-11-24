@@ -51,6 +51,7 @@ def jobs(request):
             '-published_date')
     else:  # return all entities
         jobs_list = Job.objects.order_by('-published_date')
+
     companies = Group.objects.get(name='employer').user_set.annotate(
         jobs_count=Count('created_by')).order_by('-jobs_count')
     categories = Category.objects.all()
