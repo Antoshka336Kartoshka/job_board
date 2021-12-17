@@ -72,13 +72,14 @@ class BoardUserTestCase(TestCase):
         request.user = self.jobseeker  # user is jobseeker
         response = job_post(request)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/')  # redirect to index with message
+        self.assertRedirects(response, '/', fetch_redirect_response=False)  # redirect to index with message
 
         self.employer.company = None
         request.user = self.employer  # user is employer without company
         response = job_post(request)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/account/settings/')  # redirect to settings with message
+        self.assertRedirects(response, '/account/settings/',
+                             fetch_redirect_response=False)  # redirect to settings with message
         self.employer.company = self.company
 
 
@@ -122,11 +123,11 @@ class SearchTestCase(TestCase):
 
     @staticmethod
     def get_random_string():
-        return ''.join(random.choice(string.printable) for i in range(random.randint(0, len(string.printable))))
+        return ''.join(random.choice(string.printable) for _ in range(random.randint(0, len(string.printable))))
 
     def test_jobs_search_view(self):
         """
-        input random values
+        input random search values
         """
         factory = RequestFactory()
         for i in range(100):
