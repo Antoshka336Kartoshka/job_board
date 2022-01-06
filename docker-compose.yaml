@@ -1,0 +1,23 @@
+version: "3.9"
+services:
+  job_board:
+    build: .
+    container_name: job_board
+    env_file:
+      - .env
+    volumes:
+      - ./data/job_board/static:/job_board/static
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    env_file:
+      - .envpsql
+    ports:
+      - "5432:5432"

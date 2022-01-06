@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 WSGI config for job_board project.
 
