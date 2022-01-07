@@ -6,4 +6,3 @@ __pycache__/
 /main/static/users/
 /main/tests/
 data
-.*sh
