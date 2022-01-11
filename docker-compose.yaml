@@ -3,6 +3,7 @@ services:
   job_board:
     build: .
     container_name: job_board
+    restart: always
     env_file:
       - .env
     volumes:
@@ -11,13 +12,49 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+      - rabbit
+    
+  celery:
+    build: .
+    container_name: celery
+    restart: always
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          memory: 15G
+        reservations:
+          memory: 10G
+    ports:
+      - "5555:5555"
+    entrypoint: bash -c "
+      rm -rf /tmp/celery*.pid &
+      python -m celery multi start --app=job_board --pidfile=/tmp/%n.pid --logfile=/app/logs/celery/%n.log 4 -c 4 -Q:1 dispatch -Q:2 process_item -Q:3 network -c:4 1 -Q:4 celery -E &&
+      python -m celery -A job_board beat --pidfile=/tmp/celerybeat.pid -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach &&
+      python -m celery flower -A job_board --conf=/app/job_board/settings/flowerconfig.py --address=0.0.0.0"
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+      - job_board
 
   postgres:
     image: postgres
     container_name: postgres
+    restart: always
     volumes:
       - ./data/db:/var/lib/postgresql/data
     env_file:
-      - .envpsql
+      - .env
     ports:
       - "5432:5432"
+
+  rabbit:
+    container_name: rabbitmq
+    restart: always
+    image: "rabbitmq:3-management"
+    env_file:
+      - .env
+    ports:
+      - "5672:5672"
