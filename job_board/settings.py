@@ -1,5 +1,6 @@
 from pathlib import Path
 from distutils.util import strtobool
+from celery.schedules import crontab
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
     'captcha',
     'rest_framework',
     'corsheaders',
+    'django_celery_beat',
     'main.apps.MainConfig',
 ]
 
@@ -176,3 +178,9 @@ LOGGING = {
 # Celery
 
 CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BEAT_SCHEDULE = {
+    'remove_inactive_users': {
+        'task': 'main.tasks.remove_inactive_users',
+        'schedule': crontab(hour=4, minute=30, day_of_week=1),
+    }
+}
