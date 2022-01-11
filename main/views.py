@@ -1,19 +1,18 @@
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail.message import EmailMessage
 from django.http import HttpResponse, Http404, HttpResponseNotFound, JsonResponse
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
-from django.core.mail import EmailMessage
 from django.core.paginator import Paginator
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 from rest_framework.decorators import api_view
 
 from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
@@ -21,6 +20,7 @@ from main.decorators import restrict_auth_users, employer_permission, jobseeker_
 from main.utils import account_activation_token, is_employer
 from main.models import BoardUser, Job, Category, Company
 from main.serializers import JobSerializer
+from main.tasks import send_registration_email
 
 from logging import getLogger  # logging for Debug
 
@@ -28,9 +28,11 @@ log = getLogger(__name__)
 
 
 def index(request):
-    categories = Category.objects.annotate(jobs_count=Count('job')).order_by('-jobs_count')[:8]
+    categories = Category.objects.annotate(
+        jobs_count=Count('job')).order_by('-jobs_count')[:8]
     jobs_list = Job.objects.order_by('-published_date')[:5]
-    featured_candidates = Group.objects.get(name='jobseeker').user_set.filter(is_active=True)[:8]
+    featured_candidates = Group.objects.get(
+        name='jobseeker').user_set.filter(is_active=True)[:8]
     top_companies = Group.objects.get(name='employer').user_set.annotate(jobs_count=Count('created_by')).order_by(
         '-jobs_count')[:4]
     context = {'jobs_count': Job.objects.count(), 'categories': categories, 'jobs_list': jobs_list,
@@ -46,7 +48,8 @@ def jobs(request):
         job_nature = request.GET.get('job_nature', default='')
         company = request.GET.get('company', default='')
         jobs_list = Job.objects.filter(
-            Q(name__icontains=q), Q(location__icontains=location), Q(category__name__icontains=category),
+            Q(name__icontains=q), Q(location__icontains=location), Q(
+                category__name__icontains=category),
             Q(job_nature__icontains=job_nature), Q(created_by__company__name__icontains=company)).distinct().order_by(
             '-published_date')
     else:  # return all entities
@@ -61,7 +64,8 @@ def jobs(request):
     else:
         page_num = 1
     page = paginator.get_page(page_num)
-    context = {'jobs_list': page.object_list, 'page': page, 'categories': categories, 'companies': companies}
+    context = {'jobs_list': page.object_list, 'page': page,
+               'categories': categories, 'companies': companies}
     return render(request, 'main/job/jobs.html', context)
 
 
@@ -82,7 +86,8 @@ def job_details(request, pk: int):
 @employer_permission
 def job_post(request):
     if not request.user.company:
-        messages.warning(request, 'To post a job you should register your company')
+        messages.warning(
+            request, 'To post a job you should register your company')
         return redirect('account_settings')
     form = JobForm
     if request.method == 'POST':
@@ -111,7 +116,8 @@ def job_apply(request, pk: int):
         messages.info(request, msg)
         return redirect('applied_jobs')
     else:
-        messages.error(request, 'You should add CV and Portfolio before applying for a job')
+        messages.error(
+            request, 'You should add CV and Portfolio before applying for a job')
         return redirect('account_settings')
 
 
@@ -128,7 +134,8 @@ def job_delete(request, pk: int):
 
 
 def candidates(request):
-    candidates_list = Group.objects.get(name='jobseeker').user_set.filter(is_active=True)
+    candidates_list = Group.objects.get(
+        name='jobseeker').user_set.filter(is_active=True)
     paginator = Paginator(candidates_list, 8, 4)
     if 'page' in request.GET:
         page_num = request.GET['page']
@@ -161,7 +168,8 @@ def contact(request):
         email = EmailMessage(subject=request.POST['subject'], body=body,
                              from_email=request.POST['email'], to=(settings.EMAIL_HOST_USER,))
         email.send()
-        messages.success(request, 'Your email was sent, we will contact you via Email soon')
+        messages.success(
+            request, 'Your email was sent, we will contact you via Email soon')
     return render(request, 'main/contact.html')
 
 
@@ -203,18 +211,7 @@ def user_registration(request):
                 user_group = Group.objects.get(name='jobseeker')
             user.groups.add(user_group)
             current_site = get_current_site(request)
-            mail_subject = 'Activation link from Job Board'
-            message = render_to_string('main/account/email_confirmation.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
+            send_registration_email.delay(user.pk, current_site.domain)
             msg = 'Registration was successful, please confirm your email'
             messages.success(request, msg)
             return redirect('index')
@@ -232,7 +229,8 @@ def activate_user(request, uidb64: str, token: str):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(request, 'Thank you for your email confirmation. Now you can log in to your account.')
+        messages.success(
+            request, 'Thank you for your email confirmation. Now you can log in to your account.')
         return redirect('index')
     else:
         return HttpResponse('Activation link is invalid!')
@@ -247,7 +245,8 @@ def password_reset(request):
             form.save(subject_template_name='main/account/password_reset_subject.txt',
                       email_template_name='main/account/password_reset_email.html',
                       request=request)
-            messages.success(request, "We've emailed you instructions for setting your password")
+            messages.success(
+                request, "We've emailed you instructions for setting your password")
             return redirect('index')
     return render(request, "main/account/password_reset.html", context={"form": form})
 
@@ -265,7 +264,8 @@ def password_reset_confirm(request, uidb64: str, token: str):
             form = SetPasswordForm(user, data=request.POST)
             if form.is_valid():
                 form.save()
-                messages.success(request, 'Your password was successfully changed. Now you can Log in')
+                messages.success(
+                    request, 'Your password was successfully changed. Now you can Log in')
                 return redirect('login')
         return render(request, 'main/account/password_reset_confirm.html', context={'form': form})
     else:
@@ -277,7 +277,8 @@ def account_settings(request):
     user = request.user
     form = AccountSettingsForm(instance=request.user)
     if request.method == 'POST':
-        form = AccountSettingsForm(request.POST, request.FILES, instance=request.user)
+        form = AccountSettingsForm(
+            request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account details were changed')
@@ -309,7 +310,8 @@ def create_company(request):
             user = BoardUser.objects.get(pk=request.user.pk)
             user.company = company
             user.save()
-            messages.success(request, 'The company was successfully registered')
+            messages.success(
+                request, 'The company was successfully registered')
             return redirect('account_settings')
 
 
