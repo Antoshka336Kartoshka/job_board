@@ -1,5 +1,6 @@
 from pathlib import Path
 from distutils.util import strtobool
+from celery.schedules import crontab
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -14,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.getenv('DEBUG'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
 
 # Application definition
 
@@ -31,6 +32,7 @@ INSTALLED_APPS = [
     'captcha',
     'rest_framework',
     'corsheaders',
+    'django_celery_beat',
     'main.apps.MainConfig',
 ]
 
@@ -118,6 +120,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = 'static/'
+
 STATIC_URL = '/static/'
 STATIC_PATH = os.path.join(BASE_DIR, 'main/static/')
 
@@ -137,6 +141,7 @@ EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+
 
 # REST
 
@@ -168,4 +173,15 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+
+# Celery
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default='amqp://localhost')
+CELERY_BEAT_SCHEDULE = {
+    'remove_inactive_users': {
+        'task': 'main.tasks.remove_inactive_users',
+        'schedule': crontab(hour=4, minute=30, day_of_week=1),
+    }
 }
