@@ -9,6 +9,4 @@ RUN pip install --upgrade pip \
 
 COPY . /job_board
 
-EXPOSE 8000
-
 ENTRYPOINT ["/bin/bash", "entrypoint.sh"]
