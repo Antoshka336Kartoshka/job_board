@@ -15,7 +15,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = strtobool(os.getenv('DEBUG'))
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1').split(' ')
 
 # Application definition
 
@@ -120,13 +120,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_ROOT = 'static/'
 
 STATIC_URL = '/static/'
-STATIC_PATH = os.path.join(BASE_DIR, 'main/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'job_board/static/')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'main/static/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'job_board/media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -162,7 +161,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(os.path.dirname(BASE_DIR), 'job_board\debug.log'),
+            'filename': os.path.join(BASE_DIR, 'job_board/debug.log'),
             'formatter': 'verbose'
         },
     },

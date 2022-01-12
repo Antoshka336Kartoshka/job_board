@@ -7,13 +7,26 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data/job_board/static:/job_board/static
-    ports:
-      - "8000:8000"
+      - static_volume:/job_board/job_board/static
+      - media_volume:/job_board/job_board/media
+    expose:
+      - 8000
     depends_on:
       - postgres
       - rabbit
-    
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    volumes:
+      - static_volume:/job_board/job_board/static
+      - media_volume:/job_board/job_board/media
+    ports:
+      - "1337:80"
+    depends_on:
+      - job_board
+
   celery:
     build: .
     container_name: celery
@@ -28,11 +41,14 @@ services:
           memory: 10G
     ports:
       - "5555:5555"
-    entrypoint: bash -c "
-      rm -rf /tmp/celery*.pid &
-      python -m celery multi start --app=job_board --pidfile=/tmp/%n.pid --logfile=/app/logs/celery/%n.log 4 -c 4 -Q:1 dispatch -Q:2 process_item -Q:3 network -c:4 1 -Q:4 celery -E &&
-      python -m celery -A job_board beat --pidfile=/tmp/celerybeat.pid -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler --detach &&
-      python -m celery flower -A job_board --conf=/app/job_board/settings/flowerconfig.py --address=0.0.0.0"
+    entrypoint: bash -c " rm -rf /tmp/celery*.pid & python -m celery multi start
+      --app=job_board --pidfile=/tmp/%n.pid
+      --logfile=/job_board/logs/celery/%n.log 4 -c 4 -Q:1 dispatch -Q:2
+      process_item -Q:3 network -c:4 1 -Q:4 celery -E && python -m celery -A
+      job_board beat --pidfile=/tmp/celerybeat.pid -l info --scheduler
+      django_celery_beat.schedulers:DatabaseScheduler --detach && python -m
+      celery flower -A job_board --conf=/job_board/settings/flowerconfig.py
+      --address=0.0.0.0"
     links:
       - rabbit
     depends_on:
@@ -44,7 +60,7 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     env_file:
       - .env
     ports:
@@ -58,3 +74,8 @@ services:
       - .env
     ports:
       - "5672:5672"
+
+volumes:
+  postgres_data: null
+  static_volume: null
+  media_volume: null
