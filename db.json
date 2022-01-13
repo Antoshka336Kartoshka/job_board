@@ -1,0 +1,32 @@
+[
+  {
+    "model": "main.category",
+    "pk": 3,
+    "fields": { "name": "Design & Creative" }
+  },
+  { "model": "main.category", "pk": 4, "fields": { "name": "Marketing" } },
+  { "model": "main.category", "pk": 5, "fields": { "name": "Telemarketing" } },
+  { "model": "main.category", "pk": 6, "fields": { "name": "Software & Web" } },
+  { "model": "main.category", "pk": 7, "fields": { "name": "Administration" } },
+  {
+    "model": "main.category",
+    "pk": 8,
+    "fields": { "name": "Teaching & Education" }
+  },
+  { "model": "main.category", "pk": 9, "fields": { "name": "Engineering" } },
+  {
+    "model": "main.category",
+    "pk": 10,
+    "fields": { "name": "Garments / Textile" }
+  },
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": { "name": "employer", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": { "name": "jobseeker", "permissions": [] }
+  }
+]

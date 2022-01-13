@@ -8,5 +8,9 @@ python manage.py collectstatic --no-input
 echo "Apply database migrations"
 python manage.py migrate
 
+# Load default data
+echo "Load default data"
+python manage.py loaddata db.json
+
 
 gunicorn --bind :8000 --workers 3 job_board.wsgi:application
