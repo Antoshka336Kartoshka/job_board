@@ -11,8 +11,6 @@ services:
       - media_volume:/job_board/job_board/media
     expose:
       - 8000
-    depends_on:
-      - postgres
 
   nginx:
     build: ./nginx
@@ -53,17 +51,6 @@ services:
     depends_on:
       - rabbit
       - job_board
-
-  postgres:
-    image: postgres:14.0-alpine
-    container_name: postgres
-    restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    env_file:
-      - .env
-    expose:
-      - 5432
 
   rabbit:
     image: rabbitmq:3-management-alpine
