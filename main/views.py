@@ -1,28 +1,31 @@
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail.message import EmailMessage
-from django.http import HttpResponse, Http404, HttpResponseNotFound, JsonResponse
+from logging import getLogger  # logging for Debug
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
+from django.contrib.auth.models import Group
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail.message import EmailMessage
 from django.core.paginator import Paginator
-from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Count, Q
+from django.http import (Http404, HttpResponse, HttpResponseNotFound,
+                         JsonResponse)
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from rest_framework.decorators import api_view
 
-from main.forms import RegistrationForm, LoginForm, AccountSettingsForm, JobForm, CompanyForm
-from main.decorators import restrict_auth_users, employer_permission, jobseeker_permission
-from main.utils import account_activation_token, is_employer
-from main.models import BoardUser, Job, Category, Company
+from main.decorators import (employer_permission, jobseeker_permission,
+                             restrict_auth_users)
+from main.forms import (AccountSettingsForm, CompanyForm, JobForm, LoginForm,
+                        RegistrationForm)
+from main.models import BoardUser, Category, Company, Job
 from main.serializers import JobSerializer
 from main.tasks import send_registration_email
-
-from logging import getLogger  # logging for Debug
+from main.utils import account_activation_token, is_employer
 
 log = getLogger(__name__)
 
@@ -48,10 +51,11 @@ def jobs(request):
         job_nature = request.GET.get('job_nature', default='')
         company = request.GET.get('company', default='')
         jobs_list = Job.objects.filter(
-            Q(name__icontains=q), Q(location__icontains=location), Q(
-                category__name__icontains=category),
-            Q(job_nature__icontains=job_nature), Q(created_by__company__name__icontains=company)).distinct().order_by(
-            '-published_date')
+            Q(name__icontains=q), Q(location__icontains=location),
+            Q(category__name__icontains=category),
+            Q(job_nature__icontains=job_nature),
+            Q(created_by__company__name__icontains=company)
+        ).distinct().order_by('-published_date')
     else:  # return all entities
         jobs_list = Job.objects.order_by('-published_date')
 
